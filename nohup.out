@@ -1,0 +1,53 @@
+[I 15:13:43.338 LabApp] [nb_conda_kernels] enabled, 5 kernels found
+[I 15:13:43.685 LabApp] JupyterLab extension loaded from /home/kaan/anaconda3/lib/python3.6/site-packages/jupyterlab
+[I 15:13:43.685 LabApp] JupyterLab application directory is /home/kaan/anaconda3/share/jupyter/lab
+[W 15:13:43.687 LabApp] JupyterLab server extension not enabled, manually loading...
+[I 15:13:43.892 LabApp] JupyterLab extension loaded from /home/kaan/anaconda3/lib/python3.6/site-packages/jupyterlab
+[I 15:13:43.893 LabApp] JupyterLab application directory is /home/kaan/anaconda3/share/jupyter/lab
+[I 15:13:43.893 LabApp] Serving notebooks from local directory: /home/kaan/Projects
+[I 15:13:43.893 LabApp] The Jupyter Notebook is running at:
+[I 15:13:43.893 LabApp] http://localhost:8888/
+[I 15:13:43.893 LabApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 15:13:45.716 LabApp] Node v10.15.1
+    
+[I 15:13:47.461 LabApp] Build is up to date
+[I 15:13:51.061 LabApp] Kernel started: 33582cf8-7611-4aea-b814-ea7bb0805933
+[I 15:13:51.120 LabApp] Kernel started: 906e7beb-af8c-4637-9452-3e243b5f65b1
+[I 15:13:51.135 LabApp] Kernel started: 35de73ae-cb98-4799-b104-de3355a33eff
+[I 15:13:51.148 LabApp] Kernel started: cb0c3ee2-0c40-4a60-b890-3795a4d7e242
+[I 15:13:51.272 LabApp] Kernel started: 9f3cf0b1-557a-4cd8-9cbd-2d4cfb0b46f4
+[I 15:13:51.287 LabApp] Kernel started: 02cfc3bc-0b8e-4def-985e-7eba45689631
+[I 15:13:51.302 LabApp] Kernel started: a3aa04be-9a7f-4b4a-acae-77c37a7e33de
+[I 15:13:51.316 LabApp] Kernel started: 709b5c6b-7ce4-4ab1-8776-a3b23738da44
+[I 15:13:51.334 LabApp] Kernel started: e12f1508-e136-4677-bddb-a1f97ea06b66
+[I 15:13:51.618 LabApp] Adapting to protocol v5.1 for kernel 33582cf8-7611-4aea-b814-ea7bb0805933
+[I 15:13:51.842 LabApp] Adapting to protocol v5.1 for kernel 33582cf8-7611-4aea-b814-ea7bb0805933
+[I 15:13:51.905 LabApp] Adapting to protocol v5.1 for kernel 906e7beb-af8c-4637-9452-3e243b5f65b1
+[I 15:13:51.967 LabApp] Adapting to protocol v5.1 for kernel 906e7beb-af8c-4637-9452-3e243b5f65b1
+[I 15:13:52.062 LabApp] Adapting to protocol v5.1 for kernel 35de73ae-cb98-4799-b104-de3355a33eff
+[I 15:13:52.184 LabApp] Adapting to protocol v5.1 for kernel 35de73ae-cb98-4799-b104-de3355a33eff
+[I 15:13:52.270 LabApp] Adapting to protocol v5.1 for kernel cb0c3ee2-0c40-4a60-b890-3795a4d7e242
+[I 15:13:52.370 LabApp] Adapting to protocol v5.1 for kernel cb0c3ee2-0c40-4a60-b890-3795a4d7e242
+[I 15:13:52.449 LabApp] Adapting to protocol v5.1 for kernel 9f3cf0b1-557a-4cd8-9cbd-2d4cfb0b46f4
+[I 15:13:52.521 LabApp] Adapting to protocol v5.1 for kernel 9f3cf0b1-557a-4cd8-9cbd-2d4cfb0b46f4
+[I 15:13:52.582 LabApp] Adapting to protocol v5.1 for kernel 02cfc3bc-0b8e-4def-985e-7eba45689631
+[I 15:13:52.631 LabApp] Adapting to protocol v5.1 for kernel 02cfc3bc-0b8e-4def-985e-7eba45689631
+[I 15:13:52.815 LabApp] Adapting to protocol v5.1 for kernel a3aa04be-9a7f-4b4a-acae-77c37a7e33de
+[I 15:13:52.890 LabApp] Adapting to protocol v5.1 for kernel a3aa04be-9a7f-4b4a-acae-77c37a7e33de
+[I 15:13:52.948 LabApp] Adapting to protocol v5.1 for kernel 709b5c6b-7ce4-4ab1-8776-a3b23738da44
+[I 15:13:53.029 LabApp] Adapting to protocol v5.1 for kernel 709b5c6b-7ce4-4ab1-8776-a3b23738da44
+[I 15:13:53.111 LabApp] Adapting to protocol v5.1 for kernel e12f1508-e136-4677-bddb-a1f97ea06b66
+[I 15:13:53.151 LabApp] Adapting to protocol v5.1 for kernel e12f1508-e136-4677-bddb-a1f97ea06b66
+[I 15:15:26.983 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:15:36.962 LabApp] Saving file at /neuroevolution/src/Genotype.ipynb
+[I 15:15:52.848 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:15:57.872 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:22.352 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:24.518 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:27.606 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:29.221 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:32.621 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:49.616 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:16:58.200 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:17:23.543 LabApp] Saving file at /neuroevolution/Introduction.ipynb
+[I 15:17:34.969 LabApp] Saving file at /neuroevolution/Introduction.ipynb
