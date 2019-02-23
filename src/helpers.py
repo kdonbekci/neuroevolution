@@ -5,10 +5,12 @@ from operator import mul
 
 class Distributions:
     
-    @staticmethod
     def sample_normal(mu=0.0, sigma=1.0, count=None):
         return np.random.normal(mu, sigma, count)
-    
+
+    def coin_toss():
+        return random.random() > .5
+
     def choice(seq):
         return random.choice(seq)
     
