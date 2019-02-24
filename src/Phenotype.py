@@ -1,4 +1,3 @@
-from importer import *
 from config import Configuration
 from tensorflow.keras import backend as K
 from tensorflow.keras.utils import plot_model
@@ -6,12 +5,12 @@ K.set_floatx(Configuration.MODEL_FLOAT_PRECISION)
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, Activation, Input, Lambda
 from tensorflow.keras.models import load_model, save_model
+from Genotype import Genotype
 
 class Phenotype:
-    Genotype = loader.load_module("Genotype").Genotype
-    
+
     def __init__(self, genotype, _id): #construct neural network prototype from genotype
-        self.id = _id  
+        self.id = _id
         self.build(genotype)
 
     def build(self, genotype):
