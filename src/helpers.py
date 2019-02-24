@@ -22,21 +22,21 @@ class MathOperations:
 
     def maxabs(x):
         return max(x, key=abs)
+    
+    def mean(x):
+        values = list(x)
+        return sum(map(float, values)) / len(values)
 
     def median(x):
         values = list(x)
         n = len(values)
         if n <= 2:
-            return mean(values)
+            return MathOperations.mean(values)
         values.sort()
         if (n % 2) == 1:
             return values[n//2]
         i = n//2
         return (values[i - 1] + values[i])/2.0
-
-    def mean(x):
-        values = list(x)
-        return sum(map(float, values)) / len(values)
     
     def sigmoid(z):
         z = max(-60.0, min(60.0, 5.0 * z))
