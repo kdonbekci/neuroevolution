@@ -1,0 +1,5 @@
+python=3.6.6
+tensorflow-gpu
+nbimporter
+ete3
+numpy
