@@ -11,8 +11,8 @@ class Organism:
         Organism.unique_id+=1
         self.species_hint = species_hint
 
-    def mutate(self):
-        pass
+    def mutate(self, generation):
+        self.genotype.mutate(generation)
 
     #method for sexual reproduction.
     @staticmethod
@@ -36,7 +36,6 @@ class Organism:
     def evaluate(self, ):
         self.phenotype.evaluate(fn)
 
-
     #method for the first organisms created
     @staticmethod
     def genesis(species_hint, input_dim, output_dim, generation):
@@ -44,9 +43,6 @@ class Organism:
         organism.generate_genotype(input_dim, output_dim, generation)
         organism.generate_phenotype()
         return organism
-
-    def copy(self):
-        clone = Organism(self.species_hint)
 
     def generate_genotype(self, input_dim, output_dim, generation):
         self.genotype = Genotype(generation, input_dim, output_dim)
@@ -59,6 +55,9 @@ class Organism:
 
     def age(self, generation):
         return generation - self.origin
+
+    def copy(self):
+        clone = Organism(self.species_hint)
 
     @property
     def origin(self):

@@ -4,7 +4,7 @@ import math
 from operator import mul
 
 class Distributions:
-    
+
     def sample_normal(mu=0.0, sigma=1.0, count=None):
         return np.random.normal(mu, sigma, count)
 
@@ -13,16 +13,22 @@ class Distributions:
 
     def choice(seq):
         return random.choice(seq)
-    
-    
+
+    def probability(p):
+        return random.random() < p
+
+    def shuffle(x):
+        random.shuffle(x)
+
+
 class MathOperations:
-    
+
     def product(x): # note: `x` is a list or other iterable
         return reduce(mul, x, 1.0)
 
     def maxabs(x):
         return max(x, key=abs)
-    
+
     def mean(x):
         values = list(x)
         return sum(map(float, values)) / len(values)
@@ -37,7 +43,7 @@ class MathOperations:
             return values[n//2]
         i = n//2
         return (values[i - 1] + values[i])/2.0
-    
+
     def sigmoid(z):
         z = max(-60.0, min(60.0, 5.0 * z))
         return 1.0 / (1.0 + math.exp(-z))
@@ -126,19 +132,19 @@ class Activations:
         self.add('cube', MathOperations.cube)
         self.add('linear', MathOperations.linear)
         self.function_names = list(self.functions.keys())
-    
+
     #maybe implement some sort of validation?
     def add (self, fn, f):
         self.functions[fn] = f
-        
+
     def get(self, fn):
         f = self.functions.get(fn)
         assert f is not None, '{} is not a valid activation function'.format(fn)
         return f
-    
+
     def get_random_func(self):
         return Distributions.choice(self.function_names)
-    
+
 class Aggregations():
 
     def __init__(self):
@@ -159,6 +165,6 @@ class Aggregations():
         f = self.functions.get(fn)
         assert f is not None, '{} is not a valid aggregation function'.format(fn)
         return f
-    
+
     def get_random_func(self):
         return Distributions.choice(self.function_names)

@@ -17,3 +17,8 @@ env1.add_pressure(p1)
 env1.add_pressure(p2)
 env1.generate_initial_population(100)
 env1.population
+env1.active_pressures
+env1.assemble()
+env1.active_pressures
+
+env1.size

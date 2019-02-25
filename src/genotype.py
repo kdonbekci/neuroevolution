@@ -1,7 +1,10 @@
 from helpers import Distributions
 from gene import NodeGene, ConnectionGene, PseudoGene
+from mutation import Mutations
 
 class Genotype:
+
+    mutations = Mutations()
 
     def __init__(self, input_dim=None, output_dim=None, generation=None, copy=False, genotype=None):
         self.mutable_genes = {} #innovation number --> gene lookup
@@ -31,12 +34,14 @@ class Genotype:
             self.mutable_genes[gene.inno_num] = gene
             self.innovations.append(gene.inno_num)
 
+    def mutate(self, generation):
+        Genotype.mutations.act(self, generation)
 
     #returns a child genotype after the crossover operation is complete
     @staticmethod
     def crossover(more_fit_parent, less_fit_parent, generation):
         child = Genotype(0, 0, generation) #in order to create empty genotype
-        for inno_num in more_fit_parent.innovations:
+        for inno_num in more_fit_parent.mutable_genes:
             if less_fit_parent.mutable_genes.get(inno_num) is not None:
                 gene = more_fit_parent.mutable_genes[inno_num] if Distributions.coin_toss() else less_fit_parent.mutable_genes[inno_num]
             else:
@@ -54,3 +59,9 @@ class Genotype:
 
     def __repr__(self):
         return '<Genotype-origin:{},mutable_genes:{}>'.format(self.origin, self.mutable_genes)
+
+if __name__ == '__main__':
+    g = Genotype(2, 1, 1)
+    g.mutate(2)
+    g.add_gene(NodeGene('hidden', 2))
+    g.mutable_genes

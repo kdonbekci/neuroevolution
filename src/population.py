@@ -17,6 +17,12 @@ class Population:
         for i in self.organisms:
             self.organisms[i].evaluate()
 
+    def mutate(self, generation):
+        for i in self.organisms: ## REVIEW: possible multicore CPU computation
+            self.organisms[i].mutate(generation)
+
+    def speciate(generation):
+        pass
 
     def generate_initial_population(self, size, input_dim, output_dim, generation):
         initial_species = Species.generate_initial_species(size, input_dim, output_dim, generation)

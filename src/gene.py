@@ -4,7 +4,6 @@ from config import Configuration
 class Gene:
 
     inno_tracker = 0
-
     def __init__(self, generation=None, copy=False, gene=None):
         if not copy:
             self.inno_num = Gene.inno_tracker
@@ -33,16 +32,21 @@ class NodeGene(Gene):
             assert generation > 0, 'Generation {} must be > 0'.format(generation)
             assert NodeGene.isValidType(_type), 'Invalid type (\'{}\') for NodeGene'.format(_type) #temporary
             super().__init__(generation=generation)
-            self.type = _type
+            self.type = Configuration.GENE_TYPES['node']
+            self.sub_type = _type
             self.bias = Configuration.DEFAULT_NODE_BIAS
             self.expressed  = Configuration.DEFAULT_NODE_EXPRESSED
             self.activation = Configuration.DEFAULT_NODE_ACTIVATION
+            self.incoming = 0
+            self.outgoing=0
         else:
             super().__init__(copy=True, gene=gene)
             self.type = gene.type
             self.bias = gene.bias
             self.expressed = gene.expressed
             self.activation = gene.activation
+            self.incoming = gene.incoming
+            self.outgoing = gene.outgoing
 
     @staticmethod
     def isValidType(_type):
@@ -55,9 +59,8 @@ class NodeGene(Gene):
         return clone
 
     def describe(self):
-        return '<NodeGene-origin:{},inno_num:{},type:\'{}\',bias:{},activation:\'{}\'>'.format(self.origin,self.inno_num, self.type,
-                                                                                                    self.bias, self.activation)
-
+        return '<NodeGene-origin:{},inno_num:{},sub_type:\'{}\',bias:{},activation:\'{}\'>'.format(self.origin,self.inno_num,
+                                                                                    self.sub_type, self.bias, self.activation)
 
 class ConnectionGene(Gene):
 
@@ -68,7 +71,7 @@ class ConnectionGene(Gene):
             self.outNode = outNode
             self.weight = Distributions.sample_normal()
             self.expressed = True
-            self.type = 'connection'
+            self.type = Configuration.GENE_TYPES['connection']
         else:
             super().__init__(copy=True, gene=gene)
             self.inNode = gene.inNode
@@ -87,8 +90,8 @@ class ConnectionGene(Gene):
                                                                                                    self.inNode, self.outNode,
                                                                                                    self.weight, self.expressed)
 
-
 class PseudoGene(Gene):
 
     def __init__(self, inno_num=None):
         super().__init__(inno_num)
+        self.type = Configuration.GENE_TYPES['pseudo']

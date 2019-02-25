@@ -19,8 +19,12 @@ class Environment:
             if pressure.is_active(generation=self.generation):
                 self.active_pressures.append(pressure)
 
+    @property
+    def size(self):
+        return self.population.size
+
     def pressure(self):
-        self.population.
+        # self.population.
         pass
 
     def select(self):
