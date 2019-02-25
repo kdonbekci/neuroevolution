@@ -1,5 +1,5 @@
 from helpers import Distributions
-from Gene import NodeGene, ConnectionGene, PseudoGene
+from gene import NodeGene, ConnectionGene, PseudoGene
 
 class Genotype:
 
@@ -10,10 +10,10 @@ class Genotype:
             self.innovations = []
             self.origin = generation
             for _ in range(input_dim):
-                g_in = Genotype.NodeGene(_type='input', generation=self.origin)
+                g_in = NodeGene(_type='input', generation=self.origin)
                 self.add_gene(g_in, fixed=True)
             for _ in range(output_dim):
-                g_out = Genotype.NodeGene(_type='output', generation=self.origin,)
+                g_out = NodeGene(_type='output', generation=self.origin,)
                 self.add_gene(g_out, fixed=True)
         else:
             self.origin = genotype.origin

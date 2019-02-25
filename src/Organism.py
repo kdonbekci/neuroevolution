@@ -1,12 +1,12 @@
-from Genotype import Genotype
-from Phenotype import Phenotype
-from Fitness import Fitness
+from genotype import Genotype
+from phenotype import Phenotype
+from fitness import Fitness
 
 class Organism:
     unique_id = 0
 
     def __init__(self, species_hint):
-        self.fitness = Organism.Fitness()
+        self.fitness = Fitness()
         self.id = Organism.unique_id
         Organism.unique_id+=1
         self.species_hint = species_hint
@@ -23,7 +23,7 @@ class Organism:
         else:
             more_fit_parent = parent2
             less_fit_parent = parent1
-        child_genotype = Organism.Genotype.crossover(more_fit_parent.genotype, less_fit_parent.genotype, generation)
+        child_genotype = Genotype.crossover(more_fit_parent.genotype, less_fit_parent.genotype, generation)
         child = Organism(species_hint = more_fit_parent.species_hint)
         child.add_genotype(child_genotype)
         return child
@@ -49,13 +49,13 @@ class Organism:
         clone = Organism(self.species_hint)
 
     def generate_genotype(self, input_dim, output_dim, generation):
-        self.genotype = Organism.Genotype(generation, input_dim, output_dim)
+        self.genotype = Genotype(generation, input_dim, output_dim)
 
     def add_genotype(self, genotype):
         self.genotype = genotype
 
     def generate_phenotype(self):
-        self.phenotype = Organism.Phenotype(self.genotype, self.id)
+        self.phenotype = Phenotype(self.genotype, self.id)
 
     def age(self, generation):
         return generation - self.origin

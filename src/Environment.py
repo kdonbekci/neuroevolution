@@ -1,18 +1,17 @@
 from config import Configuration
 from helpers import Distributions
-from Population import Population
-from Pressure import Pressure
+from population import Population
+from pressure import Pressure
 
 class Environment:
 
     def __init__(self, input_dim, output_dim):
-        self.population = Environment.Population
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.pressures = []
         self.active_pressures = []
         self.generation = 0
-        self.population = Environment.Population()
+        self.population = Population()
 
     def assemble(self):
         self.active_pressures = []
@@ -21,6 +20,7 @@ class Environment:
                 self.active_pressures.append(pressure)
 
     def pressure(self):
+        self.population.
         pass
 
     def select(self):

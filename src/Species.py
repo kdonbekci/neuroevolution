@@ -1,5 +1,5 @@
 from helpers import Distributions
-from Organism import Organism
+from organism import Organism
 
 class Species:
     unique_id = 0
@@ -18,17 +18,20 @@ class Species:
 
 
     def get_random_member(self):
-        return Distributions.choice(self.organisms)
+        return self.organisms[Distributions.choice(self.organisms)]
 
     @property
     def size(self):
         return len(self.organisms)
 
+    # def genetic_distance(self, organism):
+    #     retu
+
     @staticmethod
     def generate_initial_species(size, input_dim, output_dim, generation):
         first_species = Species(input_dim, output_dim, generation)
         for i in range(size):
-            org = Species.Organism.genesis(species_hint=first_species.id, input_dim=input_dim, output_dim=output_dim, generation=generation)
+            org = Organism.genesis(species_hint=first_species.id, input_dim=input_dim, output_dim=output_dim, generation=generation)
             first_species.add_organism(org)
         return first_species
 

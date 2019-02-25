@@ -1,5 +1,5 @@
 class Mutation:
-    
+
     def __init__(self):
         pass
 
@@ -12,10 +12,11 @@ class AddNodeMutation(Mutation): #adds a node between an already existing connec
 class ChangeNodeMutation(Mutation): #changes the node attribute (activation function, aggregation function)
     pass
 
-class ChangeConnectionMutation(Mutation)
-
-def ResetWeightMutation(Mutation): #resets the weight of a connection
+class ChangeConnectionMutation(Mutation):
     pass
 
-def DisableConnectionMutation(Mutation):
+class ResetWeightMutation(Mutation): #resets the weight of a connection
+    pass
+
+class DisableConnectionMutation(Mutation):
     pass

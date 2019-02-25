@@ -1,4 +1,4 @@
-from Species import Species
+from species import Species
 
 class Population:
 
@@ -6,8 +6,20 @@ class Population:
         self.species = {}
         self.organisms = {}
 
+    @property
+    def size(self):
+        total_size = 0
+        for i in self.species:
+            total_size+= self.species[i].size
+        return total_size
+
+    def pressure(self, pressures):
+        for i in self.organisms:
+            self.organisms[i].evaluate()
+
+
     def generate_initial_population(self, size, input_dim, output_dim, generation):
-        initial_species = Population.Species.generate_initial_species(size, input_dim, output_dim, generation)
+        initial_species = Species.generate_initial_species(size, input_dim, output_dim, generation)
         self.add_species(initial_species)
         self.add_organisms(initial_species.organisms)
 
@@ -16,4 +28,9 @@ class Population:
         self.species[species.id] = species
 
     def add_organisms(self, organisms):
-        print(organisms)
+        for i in organisms:
+            self.organisms[i] = organisms[i]
+        # print(organisms)
+
+    def __repr__(self):
+        return '<Population-size:{},species:{}'.format(self.size, self.species)
