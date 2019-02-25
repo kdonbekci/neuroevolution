@@ -19,3 +19,7 @@ class Configuration:
     INV_GENE_TYPES = {0: 'node', 1: 'connection', 2:'pseudo'}
 
     MUTATION_P = 0.05
+
+    MUTATION_LIMIT = 5
+
+    MUTATION_MAX_ATTEMPTS = 10
