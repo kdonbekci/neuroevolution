@@ -5,17 +5,26 @@ from gene import NodeGene, ConnectionGene, PseudoGene
 class Mutations:
 
     def __init__(self):
-        self.mutations = [AddNodeMutation(), AddConnectionMutation(), ChangeNodeMutation(),
-                            DisableConnectionMutation()]
+        self.node_mutations = [AddConnectionMutation(), ChangeNodeMutation()]
+        self.connection_mutations = [AddNodeMutation(), DisableConnectionMutation()]
 
     def act(self, genome, generation):
-        for i in genome.mutable_genes:
-            gene = genome.mutable_genes[i]
-            Distributions.shuffle(self.mutations)
-            for mutation in self.mutations:
-                if mutation.attempt(gene):
+        for i in genome.nodes:
+            node_gene = genome.nodes[i]
+            Distributions.shuffle(self.node_mutations)
+            for mutation in self.node_mutations:
+                if mutation.attempt(node_gene):
                     break
-        for mutation in self.mutations:
+        for i in genome.connections:
+            connection_gene = genome.connections[i]
+            Distributions.shuffle(self.connection_mutations)
+            for mutation in self.connection_mutations:
+                if mutation.attempt(connection_gene):
+                    break
+        for mutation in self.node_mutations:
+            mutation.act(genome)
+            mutation.clear()
+        for mutation in self.connection_mutations:
             mutation.act(genome)
             mutation.clear()
 
@@ -32,7 +41,7 @@ class Mutation:
         self.gene = None
 
     def attempt(self, gene):
-        if self.gene is not None or gene.type is not self.scope:
+        if self.gene is not None:
             return False
         if Distributions.probability(self.p):
             self.gene = gene
@@ -41,14 +50,23 @@ class Mutation:
     def __repr__(self):
         return self.describe()
 
-class AddConnectionMutation(Mutation): #adds a connection between two already existing nodes
+class AddConnectionMutation(Mutation): #adds a connection between two already existing, unconnected nodes
 
     def __init__(self):
         super().__init__()
         self.scope = Configuration.GENE_TYPES['node']
+        self.max_attempts = 10
 
     def act(self, genome):
-        taget = 
+        attempt = 0
+        acted = False
+        while not acted and attemt < self.max_attempts:
+            attempts+=1
+            source = Distributions.choice(genome.nodes)
+            if self.gene.inno_num in source.incoming or 
+
+
+
         pass
 
     def describe(self):

@@ -45,7 +45,8 @@ class Organism:
         return organism
 
     def generate_genotype(self, input_dim, output_dim, generation):
-        self.genotype = Genotype(generation, input_dim, output_dim)
+        self.genotype = Genotype()
+        self.genotype.initialize(input_dim, output_dim, generation)
 
     def add_genotype(self, genotype):
         self.genotype = genotype

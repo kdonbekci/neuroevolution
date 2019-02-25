@@ -1,38 +1,44 @@
 from helpers import Distributions
 from gene import NodeGene, ConnectionGene, PseudoGene
 from mutation import Mutations
+from config import Configuration
 
 class Genotype:
 
     mutations = Mutations()
 
-    def __init__(self, input_dim=None, output_dim=None, generation=None, copy=False, genotype=None):
-        self.mutable_genes = {} #innovation number --> gene lookup
-        self.fixed_genes = {}
-        if not copy:
-            self.innovations = []
-            self.origin = generation
-            for _ in range(input_dim):
-                g_in = NodeGene(_type='input', generation=self.origin)
-                self.add_gene(g_in, fixed=True)
-            for _ in range(output_dim):
-                g_out = NodeGene(_type='output', generation=self.origin,)
-                self.add_gene(g_out, fixed=True)
-        else:
-            self.origin = genotype.origin
-            for i in genotype.mutable_genes:
-                self.mutable_genes[i] = genotype.mutable_genes[i].copy()
-            for i in genotype.fixed_genes:
-                self.fixed_genes[i] = genotype.fixed_genes[i].copy()
-            self.innovations = genotype.innovations.copy()
+    def __init__(self):
+        # self.mutable_genes = {} #innovation number --> gene lookup
+        # self.fixed_genes = {}
+        self.genes = {}
+        self.nodes = Set()
+        self.connections = Set()
 
-    def add_gene(self, gene, fixed=False):
+    def initialize(self, input_dim, output_dim, generation):
+        self.innovations = []
+        self.origin = generation
+        for _ in range(input_dim):
+            g_in = NodeGene(_type='input', generation=self.origin)
+            self.add_gene(g_in)
+        for _ in range(output_dim):
+            g_out = NodeGene(_type='output', generation=self.origin,)
+            self.add_gene(g_out)
+
+    def add_gene(self, gene):
 #         assert gene.inno_num not in self.genes #temporary
-        if fixed:
-            self.fixed_genes[gene.inno_num] = gene
-        else:
-            self.mutable_genes[gene.inno_num] = gene
-            self.innovations.append(gene.inno_num)
+        if gene.type is Configuration.GENE_TYPES['connection']:
+            self.connections.add(gene.inno_num)
+            self.genes[gene.inNode].incoming.add(gene.outNode)
+            self.genes[gene.outNode].outgoing.add(gene.inNode)
+        elif gene.type is Configuration.GENE_TYPES['node']:
+            self.nodes.add(gene.inno_num)
+        self.genes[gene.inno_num] = gene
+        self.innovations.append(gene.inno_num)
+        # if fixed:
+        #     self.fixed_genes[gene.inno_num] = gene
+        # else:
+        #     self.mutable_genes[gene.inno_num] = gene
+        #     self.innovations.append(gene.inno_num)
 
     def mutate(self, generation):
         Genotype.mutations.act(self, generation)
@@ -54,7 +60,15 @@ class Genotype:
 
 
     def copy(self):
-        clone = Genotype(copy=True, genotype=self)
+        clone = Genotype()
+        clone.origin = self.origin
+        clone.innovations = self.innovations.copy()
+        clone.connections = self.connections.copy()
+        clone.nodes = self.nodes.copy()
+        for i in self.nodes:
+            clone.genes[i] = self.genes[i].copy()
+        for i in self.connections:
+            clone.genes[i] = self.genes[i].copy()
         return clone
 
     def __repr__(self):

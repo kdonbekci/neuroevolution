@@ -37,16 +37,15 @@ class NodeGene(Gene):
             self.bias = Configuration.DEFAULT_NODE_BIAS
             self.expressed  = Configuration.DEFAULT_NODE_EXPRESSED
             self.activation = Configuration.DEFAULT_NODE_ACTIVATION
-            self.incoming = 0
-            self.outgoing=0
+            self.incoming = Set()
+            self.outgoing = Set()
         else:
             super().__init__(copy=True, gene=gene)
             self.type = gene.type
             self.bias = gene.bias
             self.expressed = gene.expressed
             self.activation = gene.activation
-            self.incoming = gene.incoming
-            self.outgoing = gene.outgoing
+
 
     @staticmethod
     def isValidType(_type):
