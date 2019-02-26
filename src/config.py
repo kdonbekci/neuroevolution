@@ -18,8 +18,10 @@ class Configuration:
 
     INV_GENE_TYPES = {0: 'node', 1: 'connection', 2:'pseudo'}
 
-    MUTATION_P = 0.05
+    MUTATION_P = {'add_node': .05, 'change_node': .05, 'toggle_connection': .05,
+                    'add_connection': .05, 'toggle_node': .01}
 
-    MUTATION_LIMIT = 5
+    MUTATION_LIMIT = {'add_node': 5, 'change_node': 5, 'toggle_connection': 5,
+                    'add_connection': 5, 'toggle_node': 1}
 
     MUTATION_MAX_ATTEMPTS = 10

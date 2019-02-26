@@ -32,12 +32,15 @@ class Genotype:
 #         assert gene.inno_num not in self.genes #temporary
         if gene.type is Configuration.GENE_TYPES['connection']:
             self.connections.add(gene.inno_num)
-            self.genes[gene.inNode].incoming.add(gene.outNode)
-            self.genes[gene.outNode].outgoing.add(gene.inNode)
+            self.genes[gene.source].outgoing.add(gene.inno_num)
+            self.genes[gene.target].incoming.add(gene.inno_num)
         elif gene.type is Configuration.GENE_TYPES['node']:
             self.nodes.add(gene.inno_num)
         self.genes[gene.inno_num] = gene
         self.innovations.append(gene.inno_num)
+
+    def prune(self): #after some time, start getting rid of long disabled genes
+        pass
 
     def mutate(self, generation):
         Genotype.mutations.act(self, generation)
@@ -56,7 +59,7 @@ class Genotype:
         return child
 
 
-    def copy(self):
+    def copy(self, maintain_bias=False, maintain_weights=False, maintain_incoming_outgoing=False):
         clone = Genotype()
         clone.origin = self.origin
         clone.innovations = self.innovations.copy()
@@ -64,9 +67,9 @@ class Genotype:
         clone.nodes = self.nodes.copy()
         clone.genes = {}
         for i in self.nodes:
-            clone.genes[i] = self.genes[i].copy()
+            clone.genes[i] = self.genes[i].copy(maintain_bias=maintain_bias, maintain_incoming_outgoing=maintain_incoming_outgoing)
         for i in self.connections:
-            clone.genes[i] = self.genes[i].copy()
+            clone.genes[i] = self.genes[i].copy(maintain_weights=maintain_weights)
         return clone
 
     def __repr__(self):

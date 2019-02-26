@@ -57,9 +57,6 @@ class Organism:
     def age(self, generation):
         return generation - self.origin
 
-    def copy(self):
-        clone = Organism(self.species_hint)
-
     @property
     def origin(self):
         assert 'genotype' in self.__dict__, 'Genotype of organism not yet initialized'

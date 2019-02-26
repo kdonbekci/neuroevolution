@@ -1,12 +1,12 @@
 from config import Configuration
-from helpers import Distributions
+from helpers import Distributions, Activations
 from gene import NodeGene, ConnectionGene, PseudoGene
 
 class Mutations:
 
     def __init__(self):
         self.node_mutations = [AddConnectionMutation(), ChangeNodeMutation()]
-        self.connection_mutations = [AddNodeMutation(), DisableConnectionMutation()]
+        self.connection_mutations = [AddNodeMutation(), ToggleConnectionMutation()]
 
     # a gene can be target of only 1 mutation
     def act(self, genome, generation):
@@ -36,8 +36,6 @@ class Mutation:
 
     def __init__(self):
         self.genes = []
-        self.p = Configuration.MUTATION_P
-        self.limit = Configuration.MUTATION_LIMIT
         self.max_attempts = Configuration.MUTATION_MAX_ATTEMPTS
 
     def clear(self):
@@ -47,7 +45,7 @@ class Mutation:
         if len(self.genes) > self.limit:
             return False
         if Distributions.probability(self.p):
-            self.gene = gene
+            self.genes.append(gene.inno_num)
             return True
 
     def __repr__(self):
@@ -58,60 +56,114 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
     def __init__(self):
         super().__init__()
         self.scope = Configuration.GENE_TYPES['node']
+        self.p = Configuration.MUTATION_P['add_connection']
+        self.limit = Configuration.MUTATION_LIMIT['add_connection']
 
     def act(self, genome, generation):
         attempt = 0
-        for gene in self.genes:
+        for i in self.genes:
+            if acted or attempts > self.max_attempts:
+                break
+            target = genome.genes[i]
+            if gene.sub_type = 'input':
+                continue
             acted = False
-            while not acted and attemt < self.max_attempts:
-                source = Distributions.choice(genome.nodes)
-                if gene.inno_num in source.incoming or gene.inno_num in source.outgoing:
+            while not acted and attempts < self.max_attempts:
+                j = Distributions.choice(genome.nodes)
+                source = genome.genes[j]
+                if not source.expressed:
+                    attempts+=1
+                    continue
+                # if target.inno_num in source.incoming or target.inno_num in source.outgoing: wrong as incoming/outcoming changed
                     attempts+=1
                     continue
                 new_gene = ConnectionGene()
+                new_gene.initialize(source.inno_num, target.inno_num, generation)
+                genome.add_gene(new_gene)
                 acted = True
 
-
-
-
     def describe(self):
-        return '<AddConnectionMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])
+        return '<AddConnectionMutation>'
 
 class AddNodeMutation(Mutation): #adds a node between an already existing connection
 
     def __init__(self):
         super().__init__()
         self.scope = Configuration.GENE_TYPES['connection']
+        self.p = Configuration.MUTATION_P['add_node']
+        self.limit = Configuration.MUTATION_LIMIT['add_node']
 
-    def act(self, genome):
-        pass
+    def act(self, genome, generation):
+        for i in self.genes:
+            old_connection = genome.genes[i]
+            old_connection.expressed = False
+            old_connection.last_active = generation-1
+            new_node = NodeGene()
+            new_node.initialize('hidden', 'generation')
+            new_node.incoming.add(old_connection.source)
+            new_node.outgoing.add(old_connection.target)
+            first_connection = ConnectionGene()
+            first_connection.initialize(old_connection.source, new_node.inno_num, generation, weight=1.0)
+            second_connection = ConnectionGene()
+            second_connection.initialize(new_node.inno_num, old_connection.target, generation, weight=old_connection.weight)
+            genome.add_gene(first_connection)
+            genome.add_gene(second_connection)
 
     def describe(self):
-        return '<AddNodeMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])
+        return '<AddNodeMutation>'
 
 class ChangeNodeMutation(Mutation): #changes the node attribute (activation function, aggregation function)
 
     def __init__(self):
         super().__init__()
         self.scope = Configuration.GENE_TYPES['node']
+        self.p = Configuration.MUTATION_P['change_node']
+        self.limit = Configuration.MUTATION_LIMIT['change_node']
 
-    def act(self, genome):
-        pass
+    def act(self, genome, generation): # REVIEW: Should this set node.expressed to false and create new connections and a node gene?
+        for i in self.genes:
+            node = genome.genes[i]
+            node.activation = Activations.get_random_func()
 
     def describe(self):
-        return '<ChangeNodeMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])
+        return '<ChangeNodeMutation>'
 
-class DisableConnectionMutation(Mutation):
+class ToggleNodeMutation(Mutation):
+    def __init__(self):
+        super().__init__()
+        self.scope = Configuration.GENE_TYPES['node']
+        self.p = Configuration.MUTATION_P['toggle_node']
+        self.limit = Configuration.MUTATION_LIMIT['toggle_node']
+
+    def act(self, genome, generation):
+        for i in self.genes:
+            node = genome.genes[i]
+            node.expressed = not node.expressed
+            if not node.expressed: #need to disable all the connections that touch node
+                for j in node.incoming:
+                    genome.genes[j].expressed = False
+                for j in node.outgoing:
+                    genome.genes[j].expressed = False
+
+    def describe(self):
+        return '<DisableNodeMutation>'
+
+class ToggleConnectionMutation(Mutation):
 
     def __init__(self):
         super().__init__()
         self.scope = Configuration.GENE_TYPES['connection']
+        self.p = Configuration.MUTATION_P['toggle_connection']
+        self.limit = Configuration.MUTATION_LIMIT['toggle_connection']
 
-    def act(self, genome):
-        pass
+
+    def act(self, genome, generation):
+        for i in self.genes:
+            connection = genome.genes[i]
+            connection.expressed = not connection.expressed
 
     def describe(self):
-        return '<DisableConnectionMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])
+        return '<ToggleConnectionMutation>'
 
 if __name__ == '__main__':
     print('hi')
@@ -121,6 +173,12 @@ if __name__ == '__main__':
     if (False, True):
         print('c')
     Distributions.choice(tuple(a))
+    a = False
+    a = not a
+    a = set([2, 1, 3])
+    for i in a:
+        print (i)
+
 
 # class SwapPseudoGeneMutation(Mutation):
 #

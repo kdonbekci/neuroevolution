@@ -26,27 +26,27 @@ class NodeGene(Gene):
     def __init__(self):
         self.type = Configuration.GENE_TYPES['node']
 
-    def initialize(self, _type, generation):
+    def initialize(self, _type, generation, bias=None):
         super().__init__(generation)
         assert NodeGene.isValidType(_type), 'Invalid type (\'{}\') for NodeGene'.format(_type) #temporary
         self.sub_type = _type
-        self.bias = Configuration.DEFAULT_NODE_BIAS
+        self.bias = Configuration.DEFAULT_NODE_BIAS if bias is None else bias
         self.expressed  = Configuration.DEFAULT_NODE_EXPRESSED
         self.activation = Configuration.DEFAULT_NODE_ACTIVATION
-        self.incoming = set()
+        self.incoming = set() #these are connections
         self.outgoing = set()
 
     @staticmethod
     def isValidType(_type):
         return _type in ['hidden', 'input', 'output']
 
-    def copy(self, maintain_bias=False):
+    def copy(self, maintain_bias=False, maintain_incoming_outgoing=False):
         clone = NodeGene()
         clone.sub_type = self.sub_type
         clone.expressed = self.expressed
         clone.activation = self.activation
-        clone.incoming = self.incoming.copy()
-        clone.outgoing = self.outgoing.copy()
+        clone.incoming = self.incoming.copy() if maintain_incoming_outgoing else set()
+        clone.outgoing = self.outgoing.copy() if maintain_incoming_outgoing else set()
         clone.origin = self.origin
         clone.inno_num = self.inno_num
         clone.bias = self.bias if maintain_bias else Configuration.DEFAULT_NODE_BIAS
@@ -61,26 +61,26 @@ class ConnectionGene(Gene):
     def __init__(self):
         self.type = Configuration.GENE_TYPES['connection']
 
-    def initialize(self, inNode, outNode, generation):
+    def initialize(self, source, target, generation, weight=None):
         super().__init__(generation)
-        self.inNode = inNode
-        self.outNode = outNode
-        self.weight = Distributions.sample_normal()
+        self.source = source
+        self.target = target
+        self.weight = Distributions.sample_normal() if weight is None else weight
         self.expressed = True
 
     def copy(self, maintain_weights=False):
         clone = ConnectionGene()
         clone.inno_num = self.inno_num
         clone.origin = self.origin
-        clone.inNode = self.inNode
-        clone.outNode = self.outNode
+        clone.source = self.source
+        clone.target = self.target
         clone.weight = self.weight if maintain_weights else Distributions.sample_normal()
         clone.expressed = self.expressed
         return clone
 
     def describe(self):
-        return '<ConnectionGene-origin:{},inno_num:{},inNode:{},outNode:{},weight:{},expressed:{}>'.format(self.origin, self.inno_num,
-                                                                                                   self.inNode, self.outNode,
+        return '<ConnectionGene-origin:{},inno_num:{},source:{},target:{},weight:{},expressed:{}>'.format(self.origin, self.inno_num,
+                                                                                                   self.source, self.target,
                                                                                                    self.weight, self.expressed)
 
 class PseudoGene(Gene):
@@ -100,4 +100,3 @@ if __name__ == '__main__':
     g = ConnectionGene()
     g.initialize(1, 2, 1)
     g2 = g.copy()
-    
