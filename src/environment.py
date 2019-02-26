@@ -52,3 +52,9 @@ class Environment:
 
     def __repr__(self):
         return '<Environment-generation:{},pressures:{}>'.format(self.generation, self.pressures)
+
+def environment_tests():
+    pass
+
+if __name__ == '__main__':
+    environment_tests()

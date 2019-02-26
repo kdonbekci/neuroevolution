@@ -1,11 +1,11 @@
-from mutation import AddConnectionMutation,AddNodeMutation,ChangeNodeMutation,ChangeConnectionMutation,ResetWeightMutation,DisableConnectionMutation
-from gene import ConnectionGene, NodeGene, PseudoGene
-from genotype import Genotype
-from phenotype import Phenotype
-from fitness import Fitness
-from organism import Organism
-from pressure import Pressure
-from environment import Environment
+from mutation import AddConnectionMutation,AddNodeMutation,ChangeNodeMutation,ChangeConnectionMutation,ToggleConnectionMutation,ToggleNodeMutation,tests
+from gene import ConnectionGene, NodeGene, PseudoGene, tests
+from genotype import Genotype, tests
+from phenotype import Phenotype, tests
+from fitness import Fitness, tests
+from organism import Organism, tests
+from pressure import Pressure, tests
+from environment import Environment, tests
 
 print('hello')
 

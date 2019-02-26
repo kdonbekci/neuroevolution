@@ -39,3 +39,8 @@ class Phenotype:
 
     def __repr__(self):
         pass
+
+def phenotype_tests():
+    pass
+if __name__ == '__main__':
+    phenotype_tests()

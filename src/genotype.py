@@ -93,21 +93,8 @@ class Genotype:
     def __repr__(self):
         return '<Genotype-origin:{},size:{}>'.format(self.origin, self.size)
 
-def tests():
+def genotype_tests():
     pass
 
 if __name__ == '__main__':
-    tests()
-    # g = Genotype()
-    # g.initialize(input_dim=2, output_dim=1, generation=1)
-    # print(g)
-    # g.mutate(4)
-    # print(g)
-    # print(g.genes)
-    # g.genes[1].is_connected(g.genes[2])
-    # print(g)
-    # len(g.nodes)
-    # len(g.connections)
-    # g.genes[3].expressed
-    # g.add_gene(NodeGene('hidden', 2))
-    # g.mutable_genes
+    genotype_tests()

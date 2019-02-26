@@ -42,6 +42,9 @@ class NodeGene(Gene):
         return _type in ['hidden', 'input', 'output']
 
 
+    def is_reachable(self, other): # TODO:
+        pass
+
     def is_connected(self, other):
         for i in self.incoming:
             if i in other.outgoing:
@@ -101,14 +104,7 @@ class PseudoGene(Gene):
         super().__init__(inno_num)
         self.type = Configuration.GENE_TYPES['pseudo']
 
+def gene_tests():
+    pass
 if __name__ == '__main__':
-    g = NodeGene()
-    g.initialize('input', 1)
-    g
-    g2 = g.copy()
-    g2
-    g.inno_num = 1
-    g2
-    g = ConnectionGene()
-    g.initialize(1, 2, 1)
-    g2 = g.copy()
+    gene_tests()

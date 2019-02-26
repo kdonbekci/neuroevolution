@@ -7,4 +7,7 @@ class God:
         unique_id+=1
         self.birth = birth
 
-    
+def god_tests():
+    pass
+if __name__ == '__main__':
+    god_tests()

@@ -41,3 +41,8 @@ class Species:
 
     def __repr__(self):
         return '<Species-id:{},origin:{},size:{}>'.format(self.id, self.origin, self.size)
+
+def species_tests():
+    pass
+if __name__ == '__main__':
+    species_tests()

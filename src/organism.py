@@ -68,3 +68,8 @@ class Organism:
     #compare their fitness
     def __lt__(self, other):
         return self.fitness < other.fitness
+
+def organism_tests():
+    pass
+if __name__ == '__main__':
+    organism_tests()

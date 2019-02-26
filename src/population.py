@@ -40,3 +40,8 @@ class Population:
 
     def __repr__(self):
         return '<Population-size:{},species:{}'.format(self.size, self.species)
+
+def population_tests():
+    pass
+if __name__ == '__main__':
+    population_tests()
