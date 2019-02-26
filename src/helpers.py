@@ -48,8 +48,8 @@ class MathOperations:
         z = max(-60.0, min(60.0, 5.0 * z))
         return 1.0 / (1.0 + math.exp(-z))
 
-    def linear(z):
-        return z
+    def linear(z, w, b):
+        return z * w + b
 
     def tanh(z):
         z = max(-60.0, min(60.0, 2.5 * z))
@@ -113,37 +113,57 @@ class MathOperations:
         return z ** 3
 
 class Activations:
-    def __init__(self):
-        self.functions = {}
-        self.add('sigmoid', MathOperations.sigmoid)
-        self.add('tanh', MathOperations.tanh)
-        self.add('sin', MathOperations.sin)
-        self.add('gauss', MathOperations.gauss)
-        self.add('relu', MathOperations.relu)
-        self.add('softplus', MathOperations.softplus)
-        self.add('identity', MathOperations.identity)
-        self.add('clamped', MathOperations.clamped)
-        self.add('inv', MathOperations.inv)
-        self.add('log', MathOperations.log)
-        self.add('exp', MathOperations.exp)
-        self.add('abs', abs)
-        self.add('hat', MathOperations.hat)
-        self.add('square', MathOperations.square)
-        self.add('cube', MathOperations.cube)
-        self.add('linear', MathOperations.linear)
-        self.function_names = list(self.functions.keys())
+    functions = {'sigmoid': MathOperations.sigmoid,
+                'tanh': MathOperations.tanh,
+                'sin': MathOperations.sin,
+                'gauss': MathOperations.gauss,
+                'relu': MathOperations.relu,
+                'softplus': MathOperations.softplus,
+                'identity': MathOperations.identity,
+                'clamped': MathOperations.clamped,
+                'inv': MathOperations.inv,
+                'log': MathOperations.log,
+                'exp': MathOperations.exp,
+                'abs': abs,
+                'hat': MathOperations.hat,
+                'square': MathOperations.square,
+                'cube': MathOperations.cube,
+                'linear': MathOperations.linear}
+
+    function_names = list(functions.keys())
+
+    # def add (fn, f):
+    #     functions[fn] = f
+    #
+    # add('sigmoid', MathOperations.sigmoid)
+    # add('tanh', MathOperations.tanh)
+    # add('sin', MathOperations.sin)
+    # add('gauss', MathOperations.gauss)
+    # add('relu', MathOperations.relu)
+    # add('softplus', MathOperations.softplus)
+    # add('identity', MathOperations.identity)
+    # add('clamped', MathOperations.clamped)
+    # add('inv', MathOperations.inv)
+    # add('log', MathOperations.log)
+    # add('exp', MathOperations.exp)
+    # add('abs', abs)
+    # add('hat', MathOperations.hat)
+    # add('square', MathOperations.square)
+    # add('cube', MathOperations.cube)
+    # add('linear', MathOperations.linear)
 
     #maybe implement some sort of validation?
-    def add (self, fn, f):
-        self.functions[fn] = f
 
-    def get(self, fn):
-        f = self.functions.get(fn)
+
+    @classmethod
+    def get(cls, fn):
+        f = cls.functions.get(fn)
         assert f is not None, '{} is not a valid activation function'.format(fn)
         return f
 
-    def get_random_func(self):
-        return Distributions.choice(self.function_names)
+    @classmethod
+    def get_random_func(cls):
+        return Distributions.choice(cls.function_names)
 
 class Aggregations():
 

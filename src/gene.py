@@ -40,6 +40,17 @@ class NodeGene(Gene):
     def isValidType(_type):
         return _type in ['hidden', 'input', 'output']
 
+
+    def is_connected(self, other):
+        for i in self.incoming:
+            if i in other.outgoing:
+                return True
+        for i in other.incoming:
+            if i in self.outgoing:
+                return True
+        return False
+
+
     def copy(self, maintain_bias=False, maintain_incoming_outgoing=False):
         clone = NodeGene()
         clone.sub_type = self.sub_type

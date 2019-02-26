@@ -11,16 +11,16 @@ class Mutations:
     # a gene can be target of only 1 mutation
     def act(self, genome, generation):
         for i in reversed(genome.nodes): #reversed as later additions are likelier to mutate
-            node_gene = genome.nodes[i]
+            # node_gene = genome.nodes[i]
             Distributions.shuffle(self.node_mutations)
             for mutation in self.node_mutations:
-                if mutation.attempt(node_gene):
+                if mutation.attempt(i):
                     break
         for i in reversed(genome.connections):
-            connection_gene = genome.connections[i]
+            # connection_gene = genome.connections[i]
             Distributions.shuffle(self.connection_mutations)
             for mutation in self.connection_mutations:
-                if mutation.attempt(connection_gene):
+                if mutation.attempt(i):
                     break
         for mutation in self.node_mutations:
             mutation.act(genome, generation)
@@ -41,11 +41,11 @@ class Mutation:
     def clear(self):
         self.genes = []
 
-    def attempt(self, gene):
+    def attempt(self, gene_inno_num):
         if len(self.genes) > self.limit:
             return False
         if Distributions.probability(self.p):
-            self.genes.append(gene.inno_num)
+            self.genes.append(gene_inno_num)
             return True
 
     def __repr__(self):
@@ -61,21 +61,22 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
 
     def act(self, genome, generation):
         attempt = 0
+        acted = False
         for i in self.genes:
-            if acted or attempts > self.max_attempts:
+            if acted or attempt > self.max_attempts:
                 break
             target = genome.genes[i]
-            if gene.sub_type = 'input':
+            if target.sub_type is 'input':
                 continue
             acted = False
-            while not acted and attempts < self.max_attempts:
+            while not acted and attempt < self.max_attempts:
                 j = Distributions.choice(genome.nodes)
                 source = genome.genes[j]
                 if not source.expressed:
-                    attempts+=1
+                    attempt+=1
                     continue
-                # if target.inno_num in source.incoming or target.inno_num in source.outgoing: wrong as incoming/outcoming changed
-                    attempts+=1
+                if target.is_connected(source):
+                    attempt+=1
                     continue
                 new_gene = ConnectionGene()
                 new_gene.initialize(source.inno_num, target.inno_num, generation)
@@ -102,6 +103,7 @@ class AddNodeMutation(Mutation): #adds a node between an already existing connec
             new_node.initialize('hidden', 'generation')
             new_node.incoming.add(old_connection.source)
             new_node.outgoing.add(old_connection.target)
+            genome.add_gene(new_node)
             first_connection = ConnectionGene()
             first_connection.initialize(old_connection.source, new_node.inno_num, generation, weight=1.0)
             second_connection = ConnectionGene()
@@ -174,27 +176,9 @@ if __name__ == '__main__':
         print('c')
     Distributions.choice(tuple(a))
     a = False
-    a = not a
+    a = 'abc'
+    b = 'abc'
+    a is b
     a = set([2, 1, 3])
     for i in a:
         print (i)
-
-
-# class SwapPseudoGeneMutation(Mutation):
-#
-#     def __init__(self):
-#         self.scope = Configuration.GENE_TYPES['pseudo']
-#
-#     def act(self, gene):
-#         pass
-#
-#     def describe(self):
-#         return '<SwapPseudoGeneMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])
-
-# class ResetWeightMutation(Mutation): #resets the weight of a connection
-#
-#     def __init__(self):
-#         pass
-#
-#     def describe(self):
-#         return '<ResetWeightMutation-scope:\'{}\'>'.format(Configuration.INV_GENE_TYPES[self.scope])

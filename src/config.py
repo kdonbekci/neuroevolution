@@ -21,6 +21,9 @@ class Configuration:
     MUTATION_P = {'add_node': .05, 'change_node': .05, 'toggle_connection': .05,
                     'add_connection': .05, 'toggle_node': .01}
 
+    # MUTATION_P = {'add_node': 1.0, 'change_node': 1.0, 'toggle_connection': 1.0,
+    #                 'add_connection': 1.0, 'toggle_node': 1.0}
+
     MUTATION_LIMIT = {'add_node': 5, 'change_node': 5, 'toggle_connection': 5,
                     'add_connection': 5, 'toggle_node': 1}
 

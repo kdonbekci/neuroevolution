@@ -8,12 +8,7 @@ class Genotype:
     mutations = Mutations()
 
     def __init__(self):
-        # self.mutable_genes = {} #innovation number --> gene lookup
-        # self.fixed_genes = {}
-        self.genes = None
-        self.nodes = None
-        self.connections = None
-        self.innovations = None
+        pass
 
     def initialize(self, input_dim, output_dim, generation):
         self.origin = generation
@@ -22,20 +17,22 @@ class Genotype:
         self.connections = []
         self.innovations = []
         for _ in range(input_dim):
-            g_in = NodeGene(_type='input', generation=self.origin)
+            g_in = NodeGene()
+            g_in.initialize(_type='input', generation=self.origin)
             self.add_gene(g_in)
         for _ in range(output_dim):
-            g_out = NodeGene(_type='output', generation=self.origin,)
+            g_out = NodeGene()
+            g_out.initialize(_type='output', generation=self.origin)
             self.add_gene(g_out)
 
     def add_gene(self, gene):
 #         assert gene.inno_num not in self.genes #temporary
         if gene.type is Configuration.GENE_TYPES['connection']:
-            self.connections.add(gene.inno_num)
+            self.connections.append(gene.inno_num)
             self.genes[gene.source].outgoing.add(gene.inno_num)
             self.genes[gene.target].incoming.add(gene.inno_num)
         elif gene.type is Configuration.GENE_TYPES['node']:
-            self.nodes.add(gene.inno_num)
+            self.nodes.append(gene.inno_num)
         self.genes[gene.inno_num] = gene
         self.innovations.append(gene.inno_num)
 
@@ -58,6 +55,9 @@ class Genotype:
             child.add_gene(gene.copy())
         return child
 
+    @property
+    def size(self):
+        return len(self.genes)
 
     def copy(self, maintain_bias=False, maintain_weights=False, maintain_incoming_outgoing=False):
         clone = Genotype()
@@ -73,10 +73,19 @@ class Genotype:
         return clone
 
     def __repr__(self):
-        return '<Genotype-origin:{},mutable_genes:{}>'.format(self.origin, self.mutable_genes)
+        return '<Genotype-origin:{},size:{}>'.format(self.origin, self.size)
 
 if __name__ == '__main__':
-    g = Genotype(2, 1, 1)
-    g.mutate(2)
+    g = Genotype()
+    g.initialize(input_dim=2, output_dim=1, generation=1)
+    print(g)
+    g.mutate(4)
+    print(g)
+    print(g.genes)
+    g.genes[1].is_connected(g.genes[2])
+    print(g)
+    len(g.nodes)
+    len(g.connections)
+    g.genes[3].expressed
     g.add_gene(NodeGene('hidden', 2))
     g.mutable_genes
