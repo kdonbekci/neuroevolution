@@ -144,8 +144,11 @@ class ToggleNodeMutation(Mutation):
             if not node.expressed: #need to disable all the connections that touch node
                 for j in node.incoming:
                     genome.genes[j].expressed = False
+
                 for j in node.outgoing:
                     genome.genes[j].expressed = False
+            else:
+                node.last_active = generation
 
     def describe(self):
         return '<DisableNodeMutation>'
@@ -163,6 +166,8 @@ class ToggleConnectionMutation(Mutation):
         for i in self.genes:
             connection = genome.genes[i]
             connection.expressed = not connection.expressed
+            if connection.expressed:
+                connection.last_active = generation
 
     def describe(self):
         return '<ToggleConnectionMutation>'

@@ -8,6 +8,7 @@ class Gene:
         self.inno_num = Gene.inno_tracker
         Gene.inno_tracker+=1
         self.origin = generation
+        self.last_active = generation
 
     def age(self, generation):
         return generation - self.origin
