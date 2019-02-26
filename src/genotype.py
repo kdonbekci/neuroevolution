@@ -36,8 +36,26 @@ class Genotype:
         self.genes[gene.inno_num] = gene
         self.innovations.append(gene.inno_num)
 
-    def prune(self): #after some time, start getting rid of long disabled genes
-        pass
+    def remove_node(self, gene):
+        for i in gene.incoming:
+            self.remove_connection(self.genes[i])
+        for i in gene.outgoing:
+            self.remove_connection(self.genes[i])
+        self.nodes.remove(gene.inno_num)
+        del self.genes[gene.inno_num]
+
+    def remove_connection(self, gene):
+        self.connections.remove(gene.inno_num)
+        del self.genes[gene.inno_num]
+
+    def prune(self, generation): #after some time, start getting rid of long disabled genes
+        for i in self.genes:
+            gene = self.genes[i]
+            if not gene.expressed and generation - gene.last_active > Configuration.PRUNE_THRESHOLD[gene.type]:
+                if gene.type is Configuration.GENE_TYPES['node']:
+                    self.remove_node(gene)
+                elif gene.type is Configuration.GENE_TYPES['connection']:
+                    self.remove_connection(gene)
 
     def mutate(self, generation):
         Genotype.mutations.act(self, generation)
@@ -75,17 +93,21 @@ class Genotype:
     def __repr__(self):
         return '<Genotype-origin:{},size:{}>'.format(self.origin, self.size)
 
+def tests():
+    pass
+
 if __name__ == '__main__':
-    g = Genotype()
-    g.initialize(input_dim=2, output_dim=1, generation=1)
-    print(g)
-    g.mutate(4)
-    print(g)
-    print(g.genes)
-    g.genes[1].is_connected(g.genes[2])
-    print(g)
-    len(g.nodes)
-    len(g.connections)
-    g.genes[3].expressed
-    g.add_gene(NodeGene('hidden', 2))
-    g.mutable_genes
+    tests()
+    # g = Genotype()
+    # g.initialize(input_dim=2, output_dim=1, generation=1)
+    # print(g)
+    # g.mutate(4)
+    # print(g)
+    # print(g.genes)
+    # g.genes[1].is_connected(g.genes[2])
+    # print(g)
+    # len(g.nodes)
+    # len(g.connections)
+    # g.genes[3].expressed
+    # g.add_gene(NodeGene('hidden', 2))
+    # g.mutable_genes

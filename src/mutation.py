@@ -172,18 +172,22 @@ class ToggleConnectionMutation(Mutation):
     def describe(self):
         return '<ToggleConnectionMutation>'
 
+def tests():
+    pass
+
 if __name__ == '__main__':
-    print('hi')
-    m = Mutations()
-    Distributions.shuffle(m.mutations)
-    m.mutations
-    if (False, True):
-        print('c')
-    Distributions.choice(tuple(a))
-    a = False
-    a = 'abc'
-    b = 'abc'
-    a is b
-    a = set([2, 1, 3])
-    for i in a:
-        print (i)
+    tests()
+    # print('hi')
+    # m = Mutations()
+    # Distributions.shuffle(m.mutations)
+    # m.mutations
+    # if (False, True):
+    #     print('c')
+    # Distributions.choice(tuple(a))
+    # a = False
+    # a = 'abc'
+    # b = 'abc'
+    # a is b
+    # a = set([2, 1, 3])
+    # for i in a:
+    #     print (i)
