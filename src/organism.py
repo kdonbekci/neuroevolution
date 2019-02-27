@@ -11,8 +11,8 @@ class Organism:
         Organism.unique_id+=1
         self.species_hint = species_hint
 
-    def mutate(self, generation):
-        self.genome.mutate(generation)
+    def mutate(self, generation, mutations):
+        self.genome.mutate(generation, mutations)
 
     #method for sexual reproduction.
     @staticmethod

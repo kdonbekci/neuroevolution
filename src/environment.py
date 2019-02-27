@@ -2,6 +2,7 @@ from config import Configuration
 from helpers import Distributions
 from population import Population
 from pressure import Pressure
+from mutation import Mutations
 
 class Environment:
 
@@ -12,6 +13,7 @@ class Environment:
         self.active_pressures = []
         self.generation = 0
         self.population = Population()
+        self.mutations = Mutations()
 
     def assemble(self):
         self.active_pressures = []
@@ -31,7 +33,7 @@ class Environment:
         pass
 
     def mutate(self):
-        pass
+        self.population.mutate(self.generation, self.mutations)
 
     def speciate(self):
         pass

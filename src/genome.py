@@ -1,11 +1,8 @@
 from helpers import Distributions
 from gene import NodeGene, ConnectionGene, PseudoGene
-from mutation import Mutations
 from config import Configuration
 
 class Genome:
-
-    mutations = Mutations()
 
     def __init__(self):
         pass
@@ -57,8 +54,8 @@ class Genome:
                 elif gene.type is Configuration.GENE_TYPES['connection']:
                     self.remove_connection(gene)
 
-    def mutate(self, generation):
-        Genome.mutations.act(self, generation)
+    def mutate(self, generation, mutations):
+        mutations.act(self, generation)
 
     #returns a child genome after the crossover operation is complete
     @staticmethod
@@ -103,6 +100,6 @@ def genome_tests():
     genome1.initialize(3, 2, generation)
     generation+=1
     genome2 = genome1.copy(maintain_incoming_outgoing=True)
-    
+    genome2.
 if __name__ == '__main__':
     assert genome_tests()
