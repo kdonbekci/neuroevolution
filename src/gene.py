@@ -4,11 +4,12 @@ from config import Configuration
 class Gene:
 
     inno_tracker = 0
-    def __init__(self, generation):
+    def __init__(self, generation, cause=None):
         self.inno_num = Gene.inno_tracker
         Gene.inno_tracker+=1
         self.origin = generation
         self.last_active = generation
+        self.cause = cause
 
     def age(self, generation):
         return generation - self.origin
@@ -27,8 +28,8 @@ class NodeGene(Gene):
     def __init__(self):
         self.type = Configuration.GENE_TYPES['node']
 
-    def initialize(self, _type, generation, bias=None):
-        super().__init__(generation)
+    def initialize(self, _type, generation, bias=None, cause=None):
+        super().__init__(generation, cause)
         assert NodeGene.isValidType(_type), 'Invalid type (\'{}\') for NodeGene'.format(_type) #temporary
         self.sub_type = _type
         self.bias = Configuration.DEFAULT_NODE_BIAS if bias is None else bias
@@ -46,6 +47,8 @@ class NodeGene(Gene):
         pass
 
     def is_connected(self, other):
+        if self == other: # REVIEW: recurrency?
+            return True
         for i in self.incoming:
             if i in other.outgoing:
                 return True
@@ -68,8 +71,8 @@ class NodeGene(Gene):
         return clone
 
     def describe(self):
-        return '<NodeGene-origin:{},inno_num:{},sub_type:\'{}\',bias:{},activation:\'{}\'>'.format(self.origin,self.inno_num,
-                                                                                    self.sub_type, self.bias, self.activation)
+        return '<NodeGene-origin:{},inno_num:{},sub_type:\'{}\',incoming:{},outgoing:{},bias:{},activation:\'{}\',cause:\'{}\'>'.format(self.origin,self.inno_num,
+                                                                                    self.sub_type, self.incoming, self.outgoing, self.bias, self.activation, self.cause)
 
     def __eq__(self, other):
         return self.inno_num is other.inno_num and self.expressed is other.expressed and self.incoming == other.incoming and self.outgoing == other.outgoing and self.origin is other.origin
@@ -79,8 +82,8 @@ class ConnectionGene(Gene):
     def __init__(self):
         self.type = Configuration.GENE_TYPES['connection']
 
-    def initialize(self, source, target, generation, weight=None):
-        super().__init__(generation)
+    def initialize(self, source, target, generation, weight=None, cause=None):
+        super().__init__(generation, cause)
         self.source = source
         self.target = target
         self.weight = Distributions.sample_normal() if weight is None else weight
@@ -97,9 +100,9 @@ class ConnectionGene(Gene):
         return clone
 
     def describe(self):
-        return '<ConnectionGene-origin:{},inno_num:{},source:{},target:{},weight:{},expressed:{}>'.format(self.origin, self.inno_num,
+        return '<ConnectionGene-origin:{},inno_num:{},source:{},target:{},weight:{},expressed:{},cause:\'{}\'>'.format(self.origin, self.inno_num,
                                                                                                    self.source, self.target,
-                                                                                                   self.weight, self.expressed)
+                                                                                                   self.weight, self.expressed,self.cause)
 
     def __eq__(self, other):
         return self.inno_num is other.inno_num and self.expressed is other.expressed and self.source is other.source and self.target is other.target and self.origin is other.origin

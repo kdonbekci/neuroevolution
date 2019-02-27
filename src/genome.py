@@ -90,6 +90,10 @@ class Genome:
             clone.genes[i] = self.genes[i].copy(maintain_weights=maintain_weights)
         return clone
 
+    def plot(self):
+        pass
+
+
     def __repr__(self):
         return '<Genome-origin:{},size:{}>'.format(self.origin, self.size)
 
@@ -97,4 +101,4 @@ def genome_tests():
     pass
 
 if __name__ == '__main__':
-    genome_tests()
+    assert genome_tests()
