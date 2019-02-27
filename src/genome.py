@@ -3,7 +3,7 @@ from gene import NodeGene, ConnectionGene, PseudoGene
 from mutation import Mutations
 from config import Configuration
 
-class Genotype:
+class Genome:
 
     mutations = Mutations()
 
@@ -58,12 +58,12 @@ class Genotype:
                     self.remove_connection(gene)
 
     def mutate(self, generation):
-        Genotype.mutations.act(self, generation)
+        Genome.mutations.act(self, generation)
 
-    #returns a child genotype after the crossover operation is complete
+    #returns a child genome after the crossover operation is complete
     @staticmethod
     def crossover(more_fit_parent, less_fit_parent, generation):
-        child = Genotype() #in order to create empty genotype
+        child = Genome() #in order to create empty genome
         child.origin = generation
         for inno_num in more_fit_parent.innovations:
             if less_fit_parent.genes.get(inno_num) is not None:
@@ -78,7 +78,7 @@ class Genotype:
         return len(self.genes)
 
     def copy(self, maintain_bias=False, maintain_weights=False, maintain_incoming_outgoing=False):
-        clone = Genotype()
+        clone = Genome()
         clone.origin = self.origin
         clone.innovations = self.innovations.copy()
         clone.connections = self.connections.copy()
@@ -91,10 +91,10 @@ class Genotype:
         return clone
 
     def __repr__(self):
-        return '<Genotype-origin:{},size:{}>'.format(self.origin, self.size)
+        return '<Genome-origin:{},size:{}>'.format(self.origin, self.size)
 
-def genotype_tests():
+def genome_tests():
     pass
 
 if __name__ == '__main__':
-    genotype_tests()
+    genome_tests()

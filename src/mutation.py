@@ -30,7 +30,7 @@ class Mutations:
             mutation.clear()
 
     def __repr__(self):
-        return '<Mutations-mutations:{}>'.format(self.mutations)
+        return '<Mutations-node_mutations:{},connection_mutations:{}>'.format(self.node_mutations, self.connection_mutations)
 
 class Mutation:
 
@@ -173,7 +173,26 @@ class ToggleConnectionMutation(Mutation):
         return '<ToggleConnectionMutation>'
 
 def mutation_tests():
-    pass
+    from genome import Genome
 
+    mutations = Mutations()
+    generation = 1
+    node_gene = NodeGene()
+    node_gene.initialize('input', generation)
+    generation+=1
+    node_gene_2 = NodeGene()
+    node_gene_2.initialize('input', generation)
+    assert node_gene.inno_num +1 is node_gene_2.inno_num
+    node_gene_3 = NodeGene()
+    node_gene_3.initialize('output', generation)
+    node_gene_3_copy = node_gene_3.copy()
+    assert node_gene_3_copy == node_gene_3
+    generation+=1
+    connection_gene = ConnectionGene()
+    connection_gene.initialize(0, 2, generation)
+    assert node_gene_3.inno_num +1 is connection_gene.inno_num
+    connection_gene_copy = connection_gene.copy()
+    assert connection_gene == connection_gene_copy
+    return True
 if __name__ == '__main__':
     mutation_tests()

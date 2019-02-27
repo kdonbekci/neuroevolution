@@ -71,6 +71,9 @@ class NodeGene(Gene):
         return '<NodeGene-origin:{},inno_num:{},sub_type:\'{}\',bias:{},activation:\'{}\'>'.format(self.origin,self.inno_num,
                                                                                     self.sub_type, self.bias, self.activation)
 
+    def __eq__(self, other):
+        return self.inno_num is other.inno_num and self.expressed is other.expressed and self.incoming == other.incoming and self.outgoing == other.outgoing and self.origin is other.origin
+
 class ConnectionGene(Gene):
 
     def __init__(self):
@@ -98,6 +101,10 @@ class ConnectionGene(Gene):
                                                                                                    self.source, self.target,
                                                                                                    self.weight, self.expressed)
 
+    def __eq__(self, other):
+        return self.inno_num is other.inno_num and self.expressed is other.expressed and self.source is other.source and self.target is other.target and self.origin is other.origin
+
+
 class PseudoGene(Gene):
 
     def __init__(self, inno_num=None):
@@ -105,6 +112,25 @@ class PseudoGene(Gene):
         self.type = Configuration.GENE_TYPES['pseudo']
 
 def gene_tests():
-    pass
+    generation = 1
+    node_gene = NodeGene()
+    node_gene.initialize('input', generation)
+    assert node_gene.origin is generation and node_gene.sub_type is 'input'
+    generation+=1
+    node_gene_2 = NodeGene()
+    node_gene_2.initialize('input', generation)
+    assert node_gene.inno_num +1 is node_gene_2.inno_num
+    node_gene_3 = NodeGene()
+    node_gene_3.initialize('output', generation)
+    node_gene_3_copy = node_gene_3.copy()
+    assert node_gene_3_copy == node_gene_3
+    generation+=1
+    connection_gene = ConnectionGene()
+    connection_gene.initialize(0, 2, generation)
+    assert node_gene_3.inno_num +1 is connection_gene.inno_num
+    connection_gene_copy = connection_gene.copy()
+    assert connection_gene == connection_gene_copy
+    return True
+
 if __name__ == '__main__':
-    gene_tests()
+    assert gene_tests()

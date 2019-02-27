@@ -1,7 +1,7 @@
 from mutation import AddConnectionMutation,AddNodeMutation,ChangeNodeMutation,ChangeConnectionMutation,ToggleConnectionMutation,ToggleNodeMutation,tests
 from gene import ConnectionGene, NodeGene, PseudoGene, tests
-from genotype import Genotype, tests
-from phenotype import Phenotype, tests
+from genome import Genome, tests
+from phenome import Phenome, tests
 from fitness import Fitness, tests
 from organism import Organism, tests
 from pressure import Pressure, tests

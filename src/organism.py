@@ -1,5 +1,5 @@
-from genotype import Genotype
-from phenotype import Phenotype
+from genome import Genome
+from phenome import Phenome
 from fitness import Fitness
 
 class Organism:
@@ -12,7 +12,7 @@ class Organism:
         self.species_hint = species_hint
 
     def mutate(self, generation):
-        self.genotype.mutate(generation)
+        self.genome.mutate(generation)
 
     #method for sexual reproduction.
     @staticmethod
@@ -23,47 +23,47 @@ class Organism:
         else:
             more_fit_parent = parent2
             less_fit_parent = parent1
-        child_genotype = Genotype.crossover(more_fit_parent.genotype, less_fit_parent.genotype, generation)
+        child_genome = Genome.crossover(more_fit_parent.genome, less_fit_parent.genome, generation)
         child = Organism(species_hint = more_fit_parent.species_hint)
-        child.add_genotype(child_genotype)
+        child.add_genome(child_genome)
         return child
 
     def asexually_reproduce(self):
         child = Organism(self.species_hint)
-        child.add_genotype(self.genotype.copy())
+        child.add_genome(self.genome.copy())
         return child
 
     def evaluate(self, ):
-        self.phenotype.evaluate(fn)
+        self.phenome.evaluate(fn)
 
     #method for the first organisms created
     @staticmethod
     def genesis(species_hint, input_dim, output_dim, generation):
         organism = Organism(species_hint)
-        organism.generate_genotype(input_dim, output_dim, generation)
-        organism.generate_phenotype()
+        organism.generate_genome(input_dim, output_dim, generation)
+        organism.generate_phenome()
         return organism
 
-    def generate_genotype(self, input_dim, output_dim, generation):
-        self.genotype = Genotype()
-        self.genotype.initialize(input_dim, output_dim, generation)
+    def generate_genome(self, input_dim, output_dim, generation):
+        self.genome = Genome()
+        self.genome.initialize(input_dim, output_dim, generation)
 
-    def add_genotype(self, genotype):
-        self.genotype = genotype
+    def add_genome(self, genome):
+        self.genome = genome
 
-    def generate_phenotype(self):
-        self.phenotype = Phenotype(self.genotype, self.id)
+    def generate_phenome(self):
+        self.phenome = Phenome(self.genome, self.id)
 
     def age(self, generation):
         return generation - self.origin
 
     @property
     def origin(self):
-        assert 'genotype' in self.__dict__, 'Genotype of organism not yet initialized'
-        return self.genotype.origin
+        assert 'genome' in self.__dict__, 'Genome of organism not yet initialized'
+        return self.genome.origin
 
     def __repr__(self):
-        return '<Organism-id:{},species_hint:{},genotype:{},fitness:{}>'.format(self.id, self.species_hint, self.genotype, self.fitness)
+        return '<Organism-id:{},species_hint:{},genome:{},fitness:{}>'.format(self.id, self.species_hint, self.genome, self.fitness)
 
     #compare their fitness
     def __lt__(self, other):
