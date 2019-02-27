@@ -16,7 +16,12 @@ class Configuration:
 
     GENE_TYPES = {'node': 0, 'connection': 1, 'pseudo': 2}
 
-    INV_GENE_TYPES = {0: 'node', 1: 'connection', 2:'pseudo'}
+    INV_GENE_TYPES = {v: k for k, v in GENE_TYPES.items()}
+
+    MUTATION_TYPES = {'add_node': 0, 'change_node': 1, 'toggle_connection': 2,
+                    'add_connection': 3, 'toggle_node': 4}
+
+    INV_MUTATION_TYPES = {v: k for k, v in MUTATION_TYPES.items()}
 
     MUTATION_P = {'add_node': .05, 'change_node': .05, 'toggle_connection': .05,
                     'add_connection': .05, 'toggle_node': .01}

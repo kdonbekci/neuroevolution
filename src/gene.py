@@ -23,6 +23,9 @@ class Gene:
     def __repr__(self):
         return self.describe()
 
+    def __hash__(self):
+        return self.inno_num
+
 class NodeGene(Gene):
 
     def __init__(self):
@@ -77,6 +80,9 @@ class NodeGene(Gene):
     def __eq__(self, other):
         return self.inno_num is other.inno_num and self.expressed is other.expressed and self.incoming == other.incoming and self.outgoing == other.outgoing and self.origin is other.origin
 
+    def __hash__(self):
+        return super().__hash__()
+
 class ConnectionGene(Gene):
 
     def __init__(self):
@@ -107,6 +113,8 @@ class ConnectionGene(Gene):
     def __eq__(self, other):
         return self.inno_num is other.inno_num and self.expressed is other.expressed and self.source is other.source and self.target is other.target and self.origin is other.origin
 
+    def __hash__(self):
+        return super().__hash__()
 
 class PseudoGene(Gene):
 

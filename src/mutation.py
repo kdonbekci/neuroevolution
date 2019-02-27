@@ -2,11 +2,39 @@ from config import Configuration
 from helpers import Distributions, Activations
 from gene import NodeGene, ConnectionGene, PseudoGene
 
+class Cause: #to be used internally by the Mutations class to check if a mutation that generates a gene is duplicate
+    def __init__(self, gene_inno_num, _type, storage=None):
+        self.gene = gene_inno_num
+        self.type = _type
+        self.storage = storage
+
+    def encode(self):
+        return (self.gene, self.type)
+
+    def __repr__(self):
+        return '<Cause-gene:{},type:\'{}\'>'.format(self.gene, Configuration.INV_MUTATION_TYPES[self.type])
+
+    def __eq__(self, other):
+        return self.gene == other.gene and self.type == other.type
+
+    def __hash__(self):
+        t = self.encode()
+        return t.__hash__()
+
+    @staticmethod
+    def decode(code):
+        return Cause(code[0], code[1])
+
+
 class Mutations:
 
     def __init__(self):
         self.node_mutations = [AddConnectionMutation(), ChangeNodeMutation()]
         self.connection_mutations = [AddNodeMutation(), ToggleConnectionMutation()]
+        self.causes = {}
+
+    def reset(self):
+        self.causes = {}
 
     # a gene can be target of only 1 mutation
     def act(self, genome, generation):
@@ -23,11 +51,12 @@ class Mutations:
                 if mutation.attempt(i):
                     break
         for mutation in self.node_mutations:
-            mutation.act(genome, generation)
+            mutation.act(genome, generation, self.causes)
             mutation.clear()
         for mutation in self.connection_mutations:
-            mutation.act(genome, generation)
+            mutation.act(genome, generation, self.causes)
             mutation.clear()
+        self.reset()
 
     def __repr__(self):
         return '<Mutations-node_mutations:{},connection_mutations:{}>'.format(self.node_mutations, self.connection_mutations)
@@ -59,7 +88,7 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
         self.p = Configuration.MUTATION_P['add_connection']
         self.limit = Configuration.MUTATION_LIMIT['add_connection']
 
-    def act(self, genome, generation):
+    def act(self, genome, generation, causes):
         attempt = 0
         acted = False
         for i in self.genes:
@@ -78,9 +107,16 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
                 if target.is_connected(source):
                     attempt+=1
                     continue
-                new_gene = ConnectionGene()
-                new_gene.initialize(source.inno_num, target.inno_num, generation, cause='AddConnectionMutation on gene-{}'.format(i))
-                genome.add_gene(new_gene)
+                cause = Cause(i, Configuration.MUTATION_TYPES['add_connection'])
+                storage = causes.get(cause)
+                if storage is None:
+                    new_connection = ConnectionGene()
+                    new_connection.initialize(source.inno_num, target.inno_num, generation, cause=cause)
+                    storage = {'new_connection': new_connection}
+                    causes[cause] = storage
+                else:
+                    new_connection = storage['new_connection'].copy()
+                genome.add_gene(new_connection)
                 acted = True
 
     def describe(self):
@@ -94,20 +130,26 @@ class AddNodeMutation(Mutation): #adds a node between an already existing connec
         self.p = Configuration.MUTATION_P['add_node']
         self.limit = Configuration.MUTATION_LIMIT['add_node']
 
-    def act(self, genome, generation):
+    def act(self, genome, generation, causes):
         for i in self.genes:
+            cause = Cause(i, Configuration.MUTATION_TYPES['add_node'])
+            storage = causes.get(cause, None)
             old_connection = genome.genes[i]
             old_connection.expressed = False
             old_connection.last_active = generation-1
-            new_node = NodeGene()
-            new_node.initialize('hidden', generation, cause='AddNodeMutation on gene-{}'.format(i))
-
-            first_connection = ConnectionGene()
-            first_connection.initialize(old_connection.source, new_node.inno_num, generation, weight=1.0, cause='AddNodeMutation on gene-{}'.format(i))
-            second_connection = ConnectionGene()
-            second_connection.initialize(new_node.inno_num, old_connection.target, generation, weight=old_connection.weight, cause='AddNodeMutation on gene-{}'.format(i))
-            new_node.incoming.add(first_connection.inno_num)
-            new_node.outgoing.add(second_connection.inno_num)
+            if storage is None:
+                new_node = NodeGene()
+                new_node.initialize('hidden', generation, cause=cause)
+                first_connection = ConnectionGene()
+                first_connection.initialize(old_connection.source, new_node.inno_num, generation, weight=1.0, cause=cause)
+                second_connection = ConnectionGene()
+                second_connection.initialize(new_node.inno_num, old_connection.target, generation, weight=old_connection.weight, cause=cause)
+                storage = {'new_node': new_node, 'first_connection': first_connection, 'second_connection':second_connection}
+                causes[cause] = storage
+            else:
+                new_node = storage['new_node'].copy()
+                first_connection = storage['first_connection'].copy()
+                second_connection = storage['second_connection'].copy()
             genome.add_gene(new_node)
             genome.add_gene(first_connection)
             genome.add_gene(second_connection)
@@ -123,7 +165,7 @@ class ChangeNodeMutation(Mutation): #changes the node attribute (activation func
         self.p = Configuration.MUTATION_P['change_node']
         self.limit = Configuration.MUTATION_LIMIT['change_node']
 
-    def act(self, genome, generation): # REVIEW: Should this set node.expressed to false and create new connections and a node gene?
+    def act(self, genome, generation, causes): # REVIEW: Should this set node.expressed to false and create new connections and a node gene?
         for i in self.genes:
             node = genome.genes[i]
             node.activation = Activations.get_random_func()
@@ -138,14 +180,13 @@ class ToggleNodeMutation(Mutation):
         self.p = Configuration.MUTATION_P['toggle_node']
         self.limit = Configuration.MUTATION_LIMIT['toggle_node']
 
-    def act(self, genome, generation):
+    def act(self, genome, generation, causes):
         for i in self.genes:
             node = genome.genes[i]
             node.expressed = not node.expressed
             if not node.expressed: #need to disable all the connections that touch node
                 for j in node.incoming:
                     genome.genes[j].expressed = False
-
                 for j in node.outgoing:
                     genome.genes[j].expressed = False
             else:
@@ -163,7 +204,7 @@ class ToggleConnectionMutation(Mutation):
         self.limit = Configuration.MUTATION_LIMIT['toggle_connection']
 
 
-    def act(self, genome, generation):
+    def act(self, genome, generation, causes):
         for i in self.genes:
             connection = genome.genes[i]
             connection.expressed = not connection.expressed
@@ -173,13 +214,17 @@ class ToggleConnectionMutation(Mutation):
     def describe(self):
         return '<ToggleConnectionMutation>'
 
-def mutation_tests():
+def mutation_tests(trials=1000, verbose=False):
     from genome import Genome
     genome = Genome()
     generation = 1
     genome.initialize(3, 2, generation)
-    while generation < 1000:
+    i = 1
+    while generation < trials:
         generation+=1
+        if verbose and generation > i * trials/100:
+            print('{}% completed'.format(i))
+            i+=1
         genome.mutate(generation)
     found_connections = set()
     inno_nums = set()
@@ -208,5 +253,6 @@ def mutation_tests():
             assert False, 'Invalid gene type encountered: {}'.format(gene.type)
     print('All tests for mutation.py completed successfully.')
     return True
+
 if __name__ == '__main__':
-    assert mutation_tests()
+    assert mutation_tests(verbose=True)

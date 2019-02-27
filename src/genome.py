@@ -98,7 +98,11 @@ class Genome:
         return '<Genome-origin:{},size:{}>'.format(self.origin, self.size)
 
 def genome_tests():
-    pass
-
+    genome1 = Genome()
+    generation = 1
+    genome1.initialize(3, 2, generation)
+    generation+=1
+    genome2 = genome1.copy(maintain_incoming_outgoing=True)
+    
 if __name__ == '__main__':
     assert genome_tests()
