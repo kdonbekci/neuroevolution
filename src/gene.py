@@ -61,7 +61,7 @@ class NodeGene(Gene):
         return False
 
 
-    def copy(self, maintain_bias=False, maintain_incoming_outgoing=False):
+    def copy(self, maintain_bias=False, maintain_incoming_outgoing=False, **kwargs):
         clone = NodeGene()
         clone.sub_type = self.sub_type
         clone.expressed = self.expressed
@@ -71,6 +71,7 @@ class NodeGene(Gene):
         clone.origin = self.origin
         clone.inno_num = self.inno_num
         clone.bias = self.bias if maintain_bias else Configuration.DEFAULT_NODE_BIAS
+        clone.cause = self.cause
         return clone
 
     def describe(self):
@@ -95,7 +96,7 @@ class ConnectionGene(Gene):
         self.weight = Distributions.sample_normal() if weight is None else weight
         self.expressed = True
 
-    def copy(self, maintain_weights=False):
+    def copy(self, maintain_weights=False, **kwargs):
         clone = ConnectionGene()
         clone.inno_num = self.inno_num
         clone.origin = self.origin
@@ -103,6 +104,7 @@ class ConnectionGene(Gene):
         clone.target = self.target
         clone.weight = self.weight if maintain_weights else Distributions.sample_normal()
         clone.expressed = self.expressed
+        clone.cause = self.cause
         return clone
 
     def describe(self):

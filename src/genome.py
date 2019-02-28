@@ -60,8 +60,12 @@ class Genome:
     #returns a child genome after the crossover operation is complete
     @staticmethod
     def crossover(more_fit_parent, less_fit_parent, generation):
-        child = Genome() #in order to create empty genome
+        child = Genome()
         child.origin = generation
+        child.innovations = []
+        child.genes = {}
+        child.nodes = []
+        child.connections = []
         for inno_num in more_fit_parent.innovations:
             if less_fit_parent.genes.get(inno_num) is not None:
                 gene = more_fit_parent.genes[inno_num] if Distributions.coin_toss() else less_fit_parent.genes[inno_num]
@@ -74,7 +78,7 @@ class Genome:
     def size(self):
         return len(self.genes)
 
-    def copy(self, maintain_bias=False, maintain_weights=False, maintain_incoming_outgoing=False):
+    def copy(self, maintain_bias=False, maintain_weights=False, maintain_incoming_outgoing=True):
         clone = Genome()
         clone.origin = self.origin
         clone.innovations = self.innovations.copy()
@@ -90,16 +94,46 @@ class Genome:
     def plot(self):
         pass
 
+    def __eq__(self, other):
+        return self.genes == other.genes and self.origin is other.origin and self.innovations == other.innovations
 
     def __repr__(self):
         return '<Genome-origin:{},size:{}>'.format(self.origin, self.size)
 
 def genome_tests():
+    from mutation import Mutations
+    import timeit
+    mutations = Mutations()
     genome1 = Genome()
     generation = 1
     genome1.initialize(3, 2, generation)
     generation+=1
-    genome2 = genome1.copy(maintain_incoming_outgoing=True)
-    genome2.
+    genome2 = genome1.copy(maintain_bias=True)
+    assert genome2 == genome1
+    while generation < 100:
+        generation+=1
+        genome1.mutate(generation, mutations)
+        genome2.mutate(generation, mutations)
+        child = Genome.crossover(genome1, genome2, generation)
+        assert child.copy() == child
+        mutations.reset()
+    genome3 = Genome.crossover(genome2, genome1, generation)
+    genome1
+    genome2
+    assert not genome3 == genome2, 'child is equal to parent'
+    genome4 = Genome.crossover(genome3, genome3, generation)
+    assert genome4 == genome3, 'child of genome crossed with itself is not equal to the genome'
+    while generation < 200:
+        generation+=1
+        genome1.mutate(generation, mutations)
+        genome2.mutate(generation, mutations)
+        genome3.mutate(generation, mutations)
+        mutations.reset()
+    genome4 = Genome.crossover(Genome.crossover(genome3, genome2, generation), genome1, generation)
+    genome4
+    for gene in genome4:
+        pass
+
+
 if __name__ == '__main__':
     assert genome_tests()

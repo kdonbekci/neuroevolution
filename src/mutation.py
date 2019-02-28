@@ -3,16 +3,16 @@ from helpers import Distributions, Activations
 from gene import NodeGene, ConnectionGene, PseudoGene
 
 class Cause: #to be used internally by the Mutations class to check if a mutation that generates a gene is duplicate
-    def __init__(self, gene_inno_num, _type, storage=None):
+    def __init__(self, gene_inno_num, _type):
         self.gene = gene_inno_num
         self.type = _type
-        self.storage = storage
+        self.storage = {}
 
     def encode(self):
         return (self.gene, self.type)
 
     def __repr__(self):
-        return '<Cause-gene:{},type:\'{}\'>'.format(self.gene, Configuration.INV_MUTATION_TYPES[self.type])
+        return '<Cause-type:\'{}\',gene:{}>'.format(Configuration.INV_MUTATION_TYPES[self.type], self.gene)
 
     def __eq__(self, other):
         return self.gene == other.gene and self.type == other.type
@@ -56,7 +56,6 @@ class Mutations:
         for mutation in self.connection_mutations:
             mutation.act(genome, generation, self.causes)
             mutation.clear()
-        self.reset()
 
     def __repr__(self):
         return '<Mutations-node_mutations:{},connection_mutations:{}>'.format(self.node_mutations, self.connection_mutations)

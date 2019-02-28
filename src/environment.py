@@ -1,7 +1,6 @@
 from config import Configuration
 from helpers import Distributions
 from population import Population
-from pressure import Pressure
 from mutation import Mutations
 
 class Environment:
