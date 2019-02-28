@@ -106,7 +106,7 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
                 if target.is_connected(source):
                     attempt+=1
                     continue
-                cause = Cause(i, Configuration.MUTATION_TYPES['add_connection'])
+                cause = Cause((i, j), Configuration.MUTATION_TYPES['add_connection'])
                 storage = causes.get(cause)
                 if storage is None:
                     new_connection = ConnectionGene()

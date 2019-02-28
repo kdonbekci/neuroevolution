@@ -103,13 +103,18 @@ class Genome:
 def genome_tests():
     from mutation import Mutations
     import timeit
+    import sys
     mutations = Mutations()
     genome1 = Genome()
     generation = 1
     genome1.initialize(3, 2, generation)
     generation+=1
     genome2 = genome1.copy(maintain_bias=True)
-    assert genome2 == genome1
+    genome3 = Genome.crossover(genome1, genome2, generation)
+    i = Distributions.choice(genome2.innovations)
+    genome2.genes[i].inno_num+=1
+    assert genome2 != genome1
+    genome2.genes[i].inno_num-=1
     while generation < 100:
         generation+=1
         genome1.mutate(generation, mutations)
@@ -130,10 +135,39 @@ def genome_tests():
         genome3.mutate(generation, mutations)
         mutations.reset()
     genome4 = Genome.crossover(Genome.crossover(genome3, genome2, generation), genome1, generation)
-    genome4
-    for gene in genome4:
-        pass
+    assert genome4 != genome3, 'Parent is equalt to child, highly unlikely'
+    genome = genome4
+    found_connections = set()
+    inno_nums = set()
+    for i in genome.genes:
+        assert i in genome3.genes, 'gene-{} not in parent'
 
+        gene = genome.genes[i]
+        assert gene.inno_num not in inno_nums
+        inno_nums.add(gene.inno_num)
+        gene = genome.genes[i]
+        if gene.type == Configuration.GENE_TYPES['node']:
+            for j in gene.incoming:
+                assert j in genome.genes, 'Incoming connection-{} of node-{} is not in genome'.format(j, gene.inno_num)
+                assert genome.genes[j].type == Configuration.GENE_TYPES['connection'], 'Incoming connection-{} of node-{} is not a connection'.format(j, gene.inno_num)
+                assert genome.genes[j].target == gene.inno_num, 'Target of incoming connection-{} is not the gene-{}'.format(j, gene.inno_num)
+                if not gene.expressed:
+                    assert not genome.genes[j].expressed, 'Incoming connection-{} of unexpressed node-{} is expressed'.format(j, gene.inno_num)
+            for j in gene.outgoing:
+                assert j in genome.genes, 'Outgoing connection-{} of node-{} is not in genome'.format(j, gene.inno_num)
+                assert genome.genes[j].source == gene.inno_num, 'Source of outgoing connection-{} is not the gene-{}'.format(j, gene.inno_num)
+                if not gene.expressed:
+                    assert not genome.genes[j].expressed, 'Outgoing connection-{} of unexpressed node-{} is expressed'.format(j, gene.inno_num)
+        elif gene.type == Configuration.GENE_TYPES['connection']:
+            assert (gene.source, gene.target) not in found_connections and (gene.target, gene.source) not in found_connections, 'Connection-{} is duplicate wrt to Nodes-{},{}'.format(gene.inno_num, gene.target, gene.source)
+            found_connections.add((gene.source, gene.target))
+            assert gene.source in genome.genes, 'Source-{} of connection-{} not in genome'.format(gene.source, gene.inno_num)
+            assert gene.target in genome.genes, 'Target-{} of connection-{} not in genome'.format(gene.target, gene.inno_num)
+        else:
+            assert False, 'Unknown gene type {} encountered'.format(gene.type)
+    print('All tests for genome.py completed successfully.')
+    return True
 
 if __name__ == '__main__':
-    assert genome_tests()
+    for _ in range(10):
+        assert genome_tests()
