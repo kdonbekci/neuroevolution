@@ -9,33 +9,36 @@ from genome import Genome
 
 class Phenome:
 
-    def __init__(self, genome, _id): #construct neural network prototype from genome
+    def __init__(self, _id): #construct neural network prototype from genome
         self.id = _id
-        self.build(genome)
 
     @property
     def size(self):
         pass
 
+# Thhis returns a tensor
+# inputs = Input(shape=(784,))
+#
+# a layer instance is callable on a tensor, and returns a tensor
+# x = Dense(64, activation='relu')(inputs)
+# x = Dense(64, activation='relu')(x)
+# predictions = Dense(10, activation='softmax')(x)
+#
+# # This creates a model that includes
+# # the Input layer and three Dense layers
+# model = Model(inputs=inputs, outputs=predictions)
+# model.compile(optimizer='rmsprop',
+#               loss='categorical_crossentropy',
+#               metrics=['accuracy'])
+# model.fit(data, labels)  # starts training
+
     def build(self, genome):
-        num_inputs = 0
-        num_outputs = 0
-#         layers
-        for i in genome.fixed_genes:
-            g = genome.fixed_genes[i]
-            if g.type == 'input':
-                num_inputs+=1
-            else:
-                num_outputs+=1
-        for i in genome.innovations:
-            g = genome.mutable_genes[i]
-            if g.type == 'connection':
-                pass
-            elif g.type == 'hidden':
-                pass
-            else:
-                assert False, 'invalid type for a gene {}'.format(g.type)
-#         _input = Input(shape=)
+        i = 0
+        inputs = []
+        while genome.genes[genome.innovations[i]].type == Configuration.GENE_TYPES['input']:
+            x = Input(shape)
+
+
 
     def __repr__(self):
         pass

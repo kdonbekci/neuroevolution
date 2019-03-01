@@ -5,10 +5,12 @@ from fitness import Fitness
 class Organism:
     unique_id = 0
 
-    def __init__(self, species_hint):
-        self.fitness = Fitness()
+    def __init__(self):
         self.id = Organism.unique_id
         Organism.unique_id+=1
+
+    def initialize(self, species_hint):
+        self.fitness = Fitness()
         self.species_hint = species_hint
 
     def mutate(self, generation, mutations):
@@ -45,14 +47,14 @@ class Organism:
         return organism
 
     def generate_genome(self, input_dim, output_dim, generation):
-        self.genome = Genome()
+        self.genome = Genome(self.id)
         self.genome.initialize(input_dim, output_dim, generation)
 
     def add_genome(self, genome):
         self.genome = genome
 
     def generate_phenome(self):
-        self.phenome = Phenome(self.genome, self.id)
+        self.phenome = Phenome(self.id)
 
     def age(self, generation):
         return generation - self.origin

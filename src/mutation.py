@@ -213,9 +213,13 @@ class ToggleConnectionMutation(Mutation):
     def describe(self):
         return '<ToggleConnectionMutation>'
 
-def mutation_tests(trials=1000, verbose=False):
+def mutation_tests():
+    trials = 500
+    verbose = False
     from genome import Genome
-    genome = Genome()
+    from mutation import Mutations
+    mutations = Mutations()
+    genome = Genome(1)
     generation = 1
     genome.initialize(3, 2, generation)
     i = 1
@@ -224,7 +228,8 @@ def mutation_tests(trials=1000, verbose=False):
         if verbose and generation > i * trials/100:
             print('{}% completed'.format(i))
             i+=1
-        genome.mutate(generation)
+        genome.mutate(generation, mutations)
+        mutations.reset()
     found_connections = set()
     inno_nums = set()
     for i in genome.genes:
@@ -235,12 +240,12 @@ def mutation_tests(trials=1000, verbose=False):
             for j in gene.incoming:
                 assert j in genome.genes, 'Incoming connection-{} of node-{} is not in genome'.format(j, gene.inno_num)
                 assert genome.genes[j].type is Configuration.GENE_TYPES['connection'], 'Incoming connection-{} of node-{} is not a connection'.format(j, gene.inno_num)
-                assert genome.genes[j].target is gene.inno_num, 'Target of incoming connection-{} is not the gene-{}'.format(j, gene.inno_num)
+                assert genome.genes[j].target == gene.inno_num, 'Target of incoming connection-{} is not the gene-{}'.format(j, gene.inno_num)
                 if not gene.expressed:
                     assert not genome.genes[j].expressed, 'Incoming connection-{} of unexpressed node-{} is expressed'.format(j, gene.inno_num)
             for j in gene.outgoing:
                 assert j in genome.genes, 'Outgoing connection-{} of node-{} is not in genome'.format(j, gene.inno_num)
-                assert genome.genes[j].source is gene.inno_num, 'Source of outgoing connection-{} is not the gene-{}'.format(j, gene.inno_num)
+                assert genome.genes[j].source == gene.inno_num, 'Source of outgoing connection-{} is not the gene-{}'.format(j, gene.inno_num)
                 if not gene.expressed:
                     assert not genome.genes[j].expressed, 'Outgoing connection-{} of unexpressed node-{} is expressed'.format(j, gene.inno_num)
         elif gene.type is Configuration.GENE_TYPES['connection']:
@@ -251,7 +256,17 @@ def mutation_tests(trials=1000, verbose=False):
         else:
             assert False, 'Invalid gene type encountered: {}'.format(gene.type)
     print('All tests for mutation.py completed successfully.')
+    # genome.genes[20067]
+    # genome.genes[20060]
+    # d = []
+    # for i in genome.genes[20060].incoming:
+    #     if genome.genes[i].inno_num == 20036:
+    #         d.append(i)
+    # for i in genome.genes[20060].outgoing:
+    #     if genome.genes[i].inno_num == 20036:
+    #         d.append(i)
+    # d
     return True
 
 if __name__ == '__main__':
-    assert mutation_tests(verbose=True)
+    assert mutation_tests()
