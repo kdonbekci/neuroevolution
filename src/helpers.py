@@ -115,20 +115,21 @@ class MathOperations:
 class Activations:
     functions = {'sigmoid': MathOperations.sigmoid,
                 'tanh': MathOperations.tanh,
-                'sin': MathOperations.sin,
-                'gauss': MathOperations.gauss,
+                # 'sin': MathOperations.sin,
+                # 'gauss': MathOperations.gauss,
                 'relu': MathOperations.relu,
                 'softplus': MathOperations.softplus,
-                'identity': MathOperations.identity,
-                'clamped': MathOperations.clamped,
-                'inv': MathOperations.inv,
-                'log': MathOperations.log,
-                'exp': MathOperations.exp,
-                'abs': abs,
-                'hat': MathOperations.hat,
-                'square': MathOperations.square,
-                'cube': MathOperations.cube,
-                'linear': MathOperations.linear}
+                # 'identity': MathOperations.identity,
+                # 'clamped': MathOperations.clamped,
+                # 'inv': MathOperations.inv,
+                # 'log': MathOperations.log,
+                'exponential': MathOperations.exp
+                # 'abs': abs,
+                # 'hat': MathOperations.hat,
+                # 'square': MathOperations.square,
+                # 'cube': MathOperations.cube,
+                # 'linear': MathOperations.linear}
+                }
 
     function_names = list(functions.keys())
 

@@ -7,6 +7,10 @@ from tensorflow.keras.layers import Dense, Activation, Input, Lambda
 from tensorflow.keras.models import load_model, save_model
 from genome import Genome
 
+class Output:
+    def __init__(self, shape):
+        self.shape = shape
+
 class Phenome:
 
     def __init__(self, _id): #construct neural network prototype from genome
@@ -34,10 +38,30 @@ class Phenome:
 
     def build(self, genome):
         i = 0
-        inputs = []
+        inputs = {}
+        outputs = {}
+        hiddens = {}
+        
         while genome.genes[genome.innovations[i]].type == Configuration.GENE_TYPES['input']:
-            x = Input(shape)
+            g = genome.genes[genome.innovations[i]]
+            x = Input(shape=g.shape)
+            inputs[g.inno_num] = x
+            i+=1
+        while genome.genes[genome.innovations[i]].type == Configuration.GENE_TYPES['input']:
+            g = genome.genes[genome.innovations[i]]
+            x = Output(shape=g.shape)
+            outputs[g.inno_num] = x
+            i+=1
+        while i < genome.size:
+            g = genome.genes[genome.innovations[i]]
+            if g.type is Configuration.GENE_TYPES['connection']:
 
+
+            elif g.type is Configuration.GENE_TYPES['hidden']:
+
+            else:
+                assert False, 'Unsupported gene type encountered: {}'.format(g.type)
+            i+=1
 
 
     def __repr__(self):
