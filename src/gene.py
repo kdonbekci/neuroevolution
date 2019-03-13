@@ -33,34 +33,20 @@ class NodeGene(Gene):
 
     def initialize(self, generation, bias=None, cause=None):
         super().__init__(generation, cause)
-        self.bias = Configuration.DEFAULT_NODE_BIAS if bias is None else bias
         self.expressed  = Configuration.DEFAULT_NODE_EXPRESSED
         self.activation = Configuration.DEFAULT_NODE_ACTIVATION
-        self.incoming = set() #these are connections
+        self.incoming = set() #these are for connections
         self.outgoing = set()
+        self.units = 1
 
-    # @staticmethod
-    # def isValidType(_type):
-    #     return _type in ['hidden', 'input', 'output']
 
-    def is_reachable(self, other): # TODO:
-        pass
-
+    # is_connected checks if other is in the outgoing of self.
     def is_connected(self, other):
         if self == other:
             return True
-        try:
-            for i in self.incoming:
-                if i in other.outgoing:
-                    return True
-        except Exception as e:
-            pass
-        try:
-            for i in other.incoming:
-                if i in self.outgoing:
-                    return True
-        except Exception as e:
-            pass
+        for i in other.incoming:
+            if i in self.outgoing:
+                return True
         return False
 
 
@@ -72,13 +58,12 @@ class NodeGene(Gene):
         clone.outgoing = self.outgoing.copy() if maintain_incoming_outgoing else set()
         clone.origin = self.origin
         clone.inno_num = self.inno_num
-        clone.bias = self.bias if maintain_bias else Configuration.DEFAULT_NODE_BIAS
         clone.cause = self.cause
         return clone
 
     def describe(self):
-        return '<NodeGene-origin:{},inno_num:{},incoming:{},outgoing:{},bias:{},expressed:{},activation:\'{}\',cause:\'{}\'>'.format(self.origin,self.inno_num,
-                                                                                    self.incoming, self.outgoing, self.bias, self.expressed, self.activation, self.cause)
+        return '<NodeGene-origin:{},inno_num:{},incoming:{},outgoing:{},expressed:{},activation:\'{}\',cause:\'{}\'>'.format(self.origin,self.inno_num,
+                                                                                    self.incoming, self.outgoing, self.expressed, self.activation, self.cause)
 
     def __eq__(self, other):
         return self.inno_num is other.inno_num and self.expressed is other.expressed and self.incoming == other.incoming and self.outgoing == other.outgoing and self.origin is other.origin
@@ -140,8 +125,8 @@ class InputGene(Gene):
     def is_connected(self, other):
         if self == other:
             return True
-        for i in self.outgoing:
-            if i in other.incoming:
+        for i in other.incoming:
+            if i in self.outgoing:
                 return True
         return False
 
@@ -153,24 +138,25 @@ class OutputGene(Gene):
     def __init__(self):
         self.type = Configuration.GENE_TYPES['output']
 
-    def initialize(self, shape, generation):
+    def initialize(self, shape, activation, loss, generation): # REVIEW: what to do for 2d, 3d outputs
         super().__init__(generation)
         self.shape = shape
+        self.activation = activation
+        self.loss = loss
         self.expressed = True
         self.incoming = set()
 
     def copy(self, maintain_incoming_outgoing=False):
         clone = OutputGene()
         clone.shape = self.shape
+        clone.activation = self.activation
+        clone.loss = self.loss
+        clone.expressed = self.expressed
         clone.incoming = self.incoming.copy() if maintain_incoming_outgoing else set()
         return clone
 
+    #output node has no outgoing.
     def is_connected(self, other):
-        if self == other:
-            return True
-        for i in self.incoming:
-            if i in other.outgoing:
-                return True
         return False
 
     def __repr__(self):

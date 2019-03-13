@@ -33,3 +33,7 @@ class Configuration:
                     'add_connection': 5, 'toggle_node': 1}
 
     MUTATION_MAX_ATTEMPTS = 10
+
+    OPTIMIZER='adam'
+
+    EPOCHS=10

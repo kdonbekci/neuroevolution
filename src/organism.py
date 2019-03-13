@@ -11,6 +11,8 @@ class Organism:
 
     def initialize(self, species_hint):
         self.fitness = Fitness()
+        self.phenome = Phenome(self.id)
+        self.genome = Genome(self.id)
         self.species_hint = species_hint
 
     def mutate(self, generation, mutations):
@@ -32,36 +34,32 @@ class Organism:
 
     def asexually_reproduce(self):
         child = Organism(self.species_hint)
-        child.add_genome(self.genome.copy())
+        child.genome = self.genome.copy()
+        child.phenome = self.phenome.copy()
         return child
 
     def evaluate(self, ):
         self.phenome.evaluate(fn)
 
-    #method for the first organisms created
+    #method for the first organism created
     @staticmethod
     def genesis(species_hint, input_dim, output_dim, generation):
         organism = Organism(species_hint)
         organism.generate_genome(input_dim, output_dim, generation)
-        organism.generate_phenome()
         return organism
 
     def generate_genome(self, input_dim, output_dim, generation):
-        self.genome = Genome(self.id)
         self.genome.initialize(input_dim, output_dim, generation)
 
-    def add_genome(self, genome):
-        self.genome = genome
-
     def generate_phenome(self):
-        self.phenome = Phenome(self.id)
+        self.phenome.initialize(self.genome)
 
     def age(self, generation):
         return generation - self.origin
 
     @property
     def origin(self):
-        assert 'genome' in self.__dict__, 'Genome of organism not yet initialized'
+        # assert 'genome' in self.__dict__, 'Genome of organism not yet initialized'
         return self.genome.origin
 
     def __repr__(self):

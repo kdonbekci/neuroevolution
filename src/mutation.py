@@ -30,6 +30,7 @@ class Mutations:
 
     def __init__(self):
         add_node = AddNodeMutation()
+        # increase_size = IncreaseSizeMutation() #inputs can't be targeted :(
         add_connection = AddConnectionMutation()
         change_node = ChangeNodeMutation()
         toggle_node = ToggleNodeMutation()
@@ -51,15 +52,15 @@ class Mutations:
             for mutation in self.node_mutations:
                 if mutation.attempt(i):
                     break
+        for i in genome.outputs:
+            Distributions.shuffle(self.output_mutations)
+            for mutation in self.output_mutations:
+                if mutation.attempt(i):
+                    break
         for i in reversed(genome.connections):
             # connection_gene = genome.connections[i]
             Distributions.shuffle(self.connection_mutations)
             for mutation in self.connection_mutations:
-                if mutation.attempt(i):
-                    break
-        for i in genome.outputs:
-            Distributions.shuffle(self.output_mutations)
-            for mutation in self.output_mutations:
                 if mutation.attempt(i):
                     break
         for mutation in self.node_mutations:
@@ -73,7 +74,7 @@ class Mutations:
             mutation.clear()
 
     def __repr__(self):
-        return '<Mutations-node_mutations:{},connection_mutations:{}>'.format(self.node_mutations, self.connection_mutations)
+        return '<Mutations-node_mutations:{},output_mutations:{},connection_mutations:{}>'.format(self.node_mutations, self.output_mutations, self.connection_mutations)
 
 class Mutation:
 
@@ -103,12 +104,10 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
         self.limit = Configuration.MUTATION_LIMIT['add_connection']
 
     def act(self, genome, generation, causes):
-        attempt = 0
         acted = False
         candidates = genome.nodes + genome.inputs
         for i in self.genes:
-            if attempt > self.max_attempts:
-                break
+            attempt = 0
             target = genome.genes[i]
             acted = False
             while not acted and attempt < self.max_attempts:
@@ -118,7 +117,7 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
                     attempt+=1
                     continue
                 cause = Cause((j, i), Configuration.MUTATION_TYPES['add_connection'])
-                storage = causes.get(cause)
+                storage = causes.get(cause, None)
                 if storage is None:
                     new_connection = ConnectionGene()
                     new_connection.initialize(source.inno_num, target.inno_num, generation, cause=cause)
@@ -126,8 +125,7 @@ class AddConnectionMutation(Mutation): #adds a connection between two already ex
                     causes[cause] = storage
                 else:
                     new_connection = storage['new_connection'].copy()
-                new_connection.expressed = source.expressed
-                target.expressed = new_connection.expressed or target.expressed
+                new_connection.expressed = source.expressed and target.expressed
                 genome.add_gene(new_connection)
                 acted = True
 
@@ -207,7 +205,7 @@ class ToggleNodeMutation(Mutation):
                     if genome.genes[j].expressed:
                         genome.genes[j].expressed = False
                         genome.genes[j].last_active = generation-1
-            else:
+            else: # REVIEW: What to do if a node that disabled node was connected to has no active connections left?
                 pass
 
     def describe(self):
@@ -220,7 +218,7 @@ class ToggleConnectionMutation(Mutation):
         self.p = Configuration.MUTATION_P['toggle_connection']
         self.limit = Configuration.MUTATION_LIMIT['toggle_connection']
 
-    def act(self, genome, generation, causes):
+    def act(self, genome, generation, causes): # REVIEW: What to do if a node that disabled node was connected to has no active connections left?
         for i in self.genes:
             connection = genome.genes[i]
             connection.expressed = not connection.expressed
@@ -232,6 +230,21 @@ class ToggleConnectionMutation(Mutation):
 
     def describe(self):
         return '<ToggleConnectionMutation>'
+
+class IncreaseSizeMutation(Mutation):
+
+    def __init__(self):
+        super().__init__()
+        self.p = Configuration.MUTATION_P['increase_size']
+        self.limit = Configuration.MUTATION_LIMIT['increase_size']
+
+    def act(self, genome, generation, causes):
+        for i in self.genes:
+            node = genome.genes[i]
+
+
+    def describe(self):
+        return '<IncreaseSizeMutation>'
 
 def mutation_tests():
     trials = 500
@@ -294,4 +307,3 @@ def mutation_tests():
 
 if __name__ == '__main__':
     assert mutation_tests()
-genome.genes

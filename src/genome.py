@@ -7,11 +7,10 @@ class Genome:
     def __init__(self):
         pass
 
-    def initialize(self, inputs, outputs, output_activation, _id, generation):
+    def initialize(self, inputs, outputs, output_activation, loss, _id, generation):
         self.origin = generation
         self.id = _id
         self.genes = {}
-        self.layers = {}
         self.nodes = []
         self.connections = []
         self.innovations = []
@@ -23,7 +22,7 @@ class Genome:
             self.add_gene(g_in)
         for i, shape in enumerate(outputs):
             g_out = OutputGene()
-            g_out.initialize(shape=shape, generation=self.origin)
+            g_out.initialize(shape=shape, activation=output_activation[i], loss = loss[i],  generation=self.origin)
             self.add_gene(g_out)
 
     def add_gene(self, gene):
@@ -64,6 +63,10 @@ class Genome:
 
     def mutate(self, generation, mutations):
         mutations.act(self, generation)
+        self.repair(generation)
+
+    def repair(self, generation): # TODO: after mutatations, some nodes might remain expressed wrongly. Fix those
+        pass
 
     #returns a child genome after the crossover operation is complete
     @staticmethod
@@ -77,7 +80,7 @@ class Genome:
         child.inputs = []
         child.outputs = []
         for inno_num in more_fit_parent.innovations:
-            if less_fit_parent.genes.get(inno_num) is not None:
+            if less_fit_parent.genes.get(inno_num, None) is not None:
                 gene = more_fit_parent.genes[inno_num] if Distributions.coin_toss() else less_fit_parent.genes[inno_num]
             else:
                 gene = more_fit_parent.genes[inno_num]
