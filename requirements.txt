@@ -1,5 +1,3 @@
 python=3.6.6
-tensorflow-gpu
 pandas
-ete3
 numpy

@@ -3,7 +3,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.utils import plot_model
 K.set_floatx(Configuration.MODEL_FLOAT_PRECISION)
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Activation, Input, Lambda
+from tensorflow.keras.layers import Dense, Activation, Input, Lambda, Concatenate
 from tensorflow.keras.models import load_model, save_model
 from sklearn.model_selection import train_test_split
 
@@ -21,10 +21,7 @@ class Phenome:
         inputs = []
         outputs = []
         loss = []
-        for i in genome.inputs:
-            node = genome.genes[i]
-            nodes[i] = Input(shape=node.shape, name='input_{}'.format(node.inno_num))
-            inputs.append(nodes[i])
+
         for i in genome.nodes:
             node = genome.genes[i]
             if not node.expressed:
@@ -35,6 +32,23 @@ class Phenome:
             nodes[i] = Dense(units= node.shape[0], activation=node.activation,  name='output_{}'.format(node.inno_num))
             # outputs.append(nodes[i])
             loss.append(node.loss)
+
+        for i in genome.inputs:
+            node = genome.genes[i]
+            nodes[i] = Input(shape=node.shape, name='input_{}'.format(node.inno_num))
+            inputs.append(nodes[i])
+            outgoing = node.outgoing
+            for j in outgoing:
+                out_node = genome.genes[j]
+                nodes[j]
+
+
+        for i in inputs:
+
+
+
+
+
         for i in genome.connections:
             connection = genome.genes[i]
             if not connection.expressed:

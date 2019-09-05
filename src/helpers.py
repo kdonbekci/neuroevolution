@@ -2,6 +2,7 @@ import numpy as np
 import random
 import math
 from operator import mul
+from functools import reduce
 
 class Distributions:
 

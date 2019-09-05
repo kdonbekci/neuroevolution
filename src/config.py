@@ -2,11 +2,17 @@ class Configuration:
 
     INITIAL_POPULATION_SIZE = 100
 
-    MODEL_FLOAT_PRECISION = 'float16'
+    MODEL_FLOAT_PRECISION = 'float32'
 
-    DEFAULT_NODE_ACTIVATION = 'linear'
+    DEFAULT_ACTIVATION = 'linear'
 
-    DEFAULT_NODE_EXPRESSED = True
+    DEFAULT_OPTIMIZER = 'adam'
+
+    DEFAULT_OPTIMIZER_PARAMS = {'adam': None}
+
+    DEFAULT_LAYER_EXPRESSED = True
+
+    DEFAULT_CONNECTION_EXPRESSED = True
 
     DEFAULT_NODE_BIAS = 0.0
 
@@ -14,7 +20,7 @@ class Configuration:
 
     CHILD_MAINTAINS_WEIGHTS = False
 
-    GENE_TYPES = {'hidden': 0, 'connection': 1, 'pseudo': 2, 'input': 3, 'output':4}
+    GENE_TYPES = {'layer': 0, 'connection': 1, 'pseudo': 2, 'input': 3, 'output':4, 'optimizer': 5}
 
     INV_GENE_TYPES = {v: k for k, v in GENE_TYPES.items()}
 
